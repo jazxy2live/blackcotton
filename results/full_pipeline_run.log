@@ -1,0 +1,353 @@
+
+=== RUN: src.construct_designer ===
+
+🧬 BlackCotton Construct Designer
+==================================================
+Loading genetic elements...
+
+  ✓ Loaded pGhMat1: 658 bp
+  ✓ Loaded pGhSCW-late: 549 bp
+  ✓ Loaded p35S: 486 bp
+  ⚠ melC2_CDS_real.fasta is not a valid CDS; falling back to GenBank resolution
+  ✓ Loaded melA: 921 bp (source: melA_tyrosinase.gb:auto_orf_reverse)
+  ✓ Loaded TYRP1: 1614 bp (source: TYRP1_CDS_real.fasta (validated))
+  ✓ Loaded DCT: 1560 bp (source: DCT_CDS_real.fasta (validated))
+  ✓ Loaded nptII: 795 bp
+  ✓ Loaded tNOS: 253 bp
+
+Assembling cassettes...
+  ✓ Cassette 1: Melanin Primary (melA) (1832 bp)
+  ✓ Cassette 2: TYRP1 Support (2416 bp)
+  ✓ Cassette 3: DCT Support (2362 bp)
+  ✓ Cassette 4: Selection Marker (nptII) (1534 bp)
+
+Building T-DNA construct...
+  ✓ Construct assembled: 8,194 bp
+
+================================================================================
+  CONSTRUCT: pBC-MelaninCotton-v2
+  Total Length: 8,194 bp
+================================================================================
+
+  LB ── [pGhMat1 → melA → tNOS] ── [pGhSCW-late → TYRP1 → tNOS] ── [pGhSCW-late → DCT → tNOS] ── [p35S → nptII → tNOS] ── RB
+
+  FEATURE TABLE
+  ----------------------------------------------------------------------------
+  Feature                   Type               Start      End   Length
+  ----------------------------------------------------------------------------
+  LB                        T-DNA_border           0       25       25
+  pGhMat1                   promoter              25      683      658
+  melA                      CDS                  683     1604      921
+  tNOS                      terminator          1604     1857      253
+  pGhSCW-late               promoter            1857     2406      549
+  TYRP1                     CDS                 2406     4020     1614
+  tNOS                      terminator          4020     4273      253
+  pGhSCW-late               promoter            4273     4822      549
+  DCT                       CDS                 4822     6382     1560
+  tNOS                      terminator          6382     6635      253
+  p35S                      promoter            6635     7121      486
+  nptII                     CDS                 7121     7916      795
+  tNOS                      terminator          7916     8169      253
+  RB                        T-DNA_border        8169     8194       25
+  ----------------------------------------------------------------------------
+
+  CASSETTE DETAILS
+  ----------------------------------------------------------------------------
+  Cassette 1: Melanin Primary (melA)
+    Promoter:   pGhMat1 (658 bp)
+    Gene:       melA (921 bp)
+    Terminator: tNOS (253 bp)
+    Total:      1832 bp
+    Function:   Primary melanin enzyme. Converts L-Tyrosine → L-DOPA → Dopaquinone. Driven by maturation promoter to fire AFTER cellulose deposition.
+
+  Cassette 2: TYRP1 Support
+    Promoter:   pGhSCW-late (549 bp)
+    Gene:       TYRP1 (1614 bp)
+    Terminator: tNOS (253 bp)
+    Total:      2416 bp
+    Function:   Stabilizes melanin intermediates. Prevents toxic accumulation of dopaquinone by channeling it toward eumelanin.
+
+  Cassette 3: DCT Support
+    Promoter:   pGhSCW-late (549 bp)
+    Gene:       DCT (1560 bp)
+    Terminator: tNOS (253 bp)
+    Total:      2362 bp
+    Function:   Converts dopachrome to DHICA, improving melanin polymer quality and ensuring deep black color (vs. brown).
+
+  Cassette 4: Selection Marker (nptII)
+    Promoter:   p35S (486 bp)
+    Gene:       nptII (795 bp)
+    Terminator: tNOS (253 bp)
+    Total:      1534 bp
+    Function:   Constitutive kanamycin resistance for transgenic selection.
+
+  SEQUENCE COMPOSITION
+  ----------------------------------------------------------------------------
+  GC Content: 46.4%
+  AT Content: 53.6%
+  A: 2,189  T: 2,207  G: 1,934  C: 1,864
+
+  RESTRICTION SITE SCAN (sites to avoid)
+  ----------------------------------------------------------------------------
+  EcoRI      (GAATTC): ⚠ FOUND (8x)
+  BamHI      (GGATCC): ⚠ FOUND (4x)
+  HindIII    (AAGCTT): ⚠ FOUND (4x)
+  BsaI       (GGTCTC): ⚠ FOUND (2x)
+  BsmBI      (CGTCTC): ⚠ FOUND (1x)
+  NotI       (GCGGCCGC): ✓ CLEAR
+  XbaI       (TCTAGA): ⚠ FOUND (2x)
+  SacI       (GAGCTC): ⚠ FOUND (4x)
+
+================================================================================
+
+Saving results...
+  📄 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/construct_map.txt
+  📄 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/pBC_MelaninCotton_v1.fasta
+  📄 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/construct_summary.json
+
+✅ Construct design complete!
+
+=== RUN: src.codon_optimizer ===
+
+🧬 BlackCotton Codon Optimizer
+==================================================
+  ⚠ melC2_CDS_real.fasta is not a valid CDS; falling back to GenBank resolution
+
+============================================================
+  CODON OPTIMIZATION REPORT: melA (Tyrosinase)
+============================================================
+
+  Protein length:     306 aa
+  Protein preserved:  ✓ YES
+
+  GC Content:
+    Original:         71.0%
+    Optimized:        57.0%
+    Cotton target:    38.0%
+    Improvement:      ✓
+
+  Codon Adaptation Index (CAI):
+    Original:         0.565
+    Optimized:        0.759
+    Improvement:      34.3%
+
+  Codon Usage Frequency (top changes):
+    Codons changed:   233/307 (75.9%)
+
+============================================================
+
+
+============================================================
+  CODON OPTIMIZATION REPORT: GhTYRP1
+============================================================
+
+  Protein length:     537 aa
+  Protein preserved:  ✓ YES
+
+  GC Content:
+    Original:         47.6%
+    Optimized:        47.0%
+    Cotton target:    38.0%
+    Improvement:      ✓
+
+  Codon Adaptation Index (CAI):
+    Original:         0.771
+    Optimized:        0.793
+    Improvement:      2.9%
+
+  Codon Usage Frequency (top changes):
+    Codons changed:   336/538 (62.5%)
+
+============================================================
+
+
+============================================================
+  CODON OPTIMIZATION REPORT: GhDCT
+============================================================
+
+  Protein length:     519 aa
+  Protein preserved:  ✓ YES
+
+  GC Content:
+    Original:         49.5%
+    Optimized:        46.5%
+    Cotton target:    38.0%
+    Improvement:      ✓
+
+  Codon Adaptation Index (CAI):
+    Original:         0.756
+    Optimized:        0.805
+    Improvement:      6.5%
+
+  Codon Usage Frequency (top changes):
+    Codons changed:   323/520 (62.1%)
+
+============================================================
+
+✅ Codon optimization complete!
+
+=== RUN: src.expression_model ===
+
+🧬 BlackCotton Gene Expression Simulator
+==================================================
+  Simulation: 0 → 50 DPA
+  Resolution: 1 hour timesteps
+  Running ODE solver...
+
+============================================================
+  GENE EXPRESSION SIMULATION RESULTS
+============================================================
+
+  melA (Tyrosinase):
+    50% max at:  41.2 DPA
+    Peak at:     50.0 DPA
+    Max level:   1466.6 (relative units)
+
+  TYRP1:
+    50% max at:  35.0 DPA
+    Peak at:     50.0 DPA
+    Max level:   1743.2 (relative units)
+
+  DCT:
+    50% max at:  35.0 DPA
+    Peak at:     50.0 DPA
+    Max level:   1743.2 (relative units)
+
+  Cellulose Deposition:
+    90% complete: 38.4 DPA
+    Max:          3.29 mg/fiber
+
+  ✓ TEMPORAL SEPARATION CHECK:
+    Cellulose 90% done:    38.4 DPA
+    melA 50% expression:   41.2 DPA
+    Gap:                   2.9 days ✓ SAFE — melanin is after cellulose
+
+============================================================
+
+Saving results...
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/expression_data.npz
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/expression_summary.json
+
+✅ Expression simulation complete!
+
+=== RUN: src.melanin_pathway ===
+
+🧬 BlackCotton Melanin Pathway Simulator
+==================================================
+  Loading expression data from previous simulation...
+  ✓ Loaded expression profiles
+  Running melanin pathway simulation...
+
+============================================================
+  MELANIN BIOSYNTHESIS SIMULATION RESULTS
+============================================================
+
+  Final melanin:      0.5000 mM equivalent
+  Target:             0.08 mg/fiber
+  Onset (1% max):     2.7 DPA
+  50% accumulation:   7.4 DPA
+
+  Tyrosine remaining: -0.0%
+  Tyrosine consumed:  100.0%
+
+  Intermediate Levels (final, should be low):
+    L-DOPA            : -0.000000 mM  ✓ LOW
+    Dopaquinone       : -0.000000 mM  ✓ LOW
+    Dopachrome        : -0.000000 mM  ✓ LOW
+    DHICA             : -0.000000 mM  ✓ LOW
+
+============================================================
+
+Saving results...
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/melanin_data.npz
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/melanin_summary.json
+
+✅ Melanin pathway simulation complete!
+
+=== RUN: src.fiber_model ===
+
+🧬 BlackCotton Fiber Quality Model
+==================================================
+
+==========================================================================================
+  FIBER QUALITY COMPARISON — USDA HVI METRICS
+==========================================================================================
+
+  Type                                            UHML    Str   Mic     L*    Grade
+  --------------------------------------------------------------------------------------
+  White Cotton (Coker-312)                        30.0   30.0   4.2   82.0     GOOD
+  Natural Brown Cotton                            22.5   21.0   3.2   45.0 BELOW-GRADE
+  Dyed Black Cotton                               29.4   28.5   4.2   12.0     GOOD
+  Engineered Black (mel=100%, ovlp=0%)            30.0   30.0   4.2   10.0     GOOD
+  Engineered Black (mel=70%, ovlp=0%)             30.0   30.0   4.2   31.6     GOOD
+  Engineered Black (mel=100%, ovlp=20%)           27.3   27.3   4.1   10.0     BASE
+  --------------------------------------------------------------------------------------
+
+  KEY: Engineered black retains 100% strength at L*=10 (deep black) — NO FADING
+==========================================================================================
+
+Saving results...
+  📊 Saved fiber quality & wash fastness data
+
+✅ Fiber quality analysis complete!
+
+=== RUN: src.tradeoff_optimizer ===
+
+🧬 BlackCotton Tradeoff Optimizer
+==================================================
+
+==============================================================================================================
+  BLACKCOTTON TRADEOFF OPTIMIZER RESULTS
+==============================================================================================================
+
+  Hard constraint enforced: temporal_gap_days >= 0
+  Coarse candidates (safe region): 14080
+  ODE-refined candidates:          119
+  Pareto-optimal refined:          3
+  Top candidates reported:         12
+
+  TOP CANDIDATES (ODE-Refined, Safe-Timing Only)
+  ----------------------------------------------------------------------------------------------------------
+   #     L*    Str   Yield  Gap(d)   ovlp  late%   ret  mat/scw act   mat/scw str      k
+  ----------------------------------------------------------------------------------------------------------
+   1   17.5   29.1   0.909    2.88  0.107   79.7  0.45  40/32 DPA   1.0/1.0      0.10
+   2   17.5   28.8   0.890    2.88  0.107   79.7  0.45  40/26 DPA   1.0/1.0      0.20
+   3   18.6   29.0   0.900    1.71  0.120   78.1  0.45  38/34 DPA   1.2/1.0      0.10
+   4   17.5   28.6   0.872    2.88  0.107   79.7  0.45  40/26 DPA   1.0/1.0      0.30
+   5   18.6   28.7   0.880    1.71  0.120   78.1  0.45  38/34 DPA   1.0/1.0      0.20
+   6   17.5   28.3   0.855    2.88  0.107   79.7  0.45  40/26 DPA   1.0/1.0      0.40
+   7   20.2   29.0   0.900    1.71  0.120   78.1  0.30  38/32 DPA   1.0/1.0      0.10
+   8   18.6   28.4   0.861    1.71  0.120   78.1  0.45  38/34 DPA   1.0/1.0      0.30
+   9   20.2   28.8   0.890    0.33  0.138   75.8  0.45  36/34 DPA   1.4/1.2      0.10
+  10   18.6   28.1   0.842    1.71  0.120   78.1  0.45  38/34 DPA   1.0/1.0      0.40
+  11   21.7   29.0   0.900    1.71  0.120   78.1  0.15  38/32 DPA   1.0/1.0      0.10
+  12   20.2   28.5   0.868    0.33  0.138   75.8  0.45  36/34 DPA   1.4/1.2      0.20
+  ----------------------------------------------------------------------------------------------------------
+
+  Saved:
+    - results/optimization_sweep.json
+    - results/optimization_refined.json
+    - results/pareto_front.json
+    - results/top_candidates.json
+    - results/optimization_summary.json
+
+==============================================================================================================
+
+✅ Optimization complete!
+
+=== RUN: src.visualization ===
+/Users/chaitanyajongra/.matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /var/folders/1y/m44801xx4zg1r4qdbb3vrc_m0000gn/T/matplotlib-njvnaatu because there was an issue with the default path (/Users/chaitanyajongra/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Matplotlib is building the font cache; this may take a moment.
+
+🧬 BlackCotton Visualization Engine
+==================================================
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/construct_visual_map.png
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/expression_kinetics.png
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/melanin_accumulation.png
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/fiber_quality_comparison.png
+  📊 Saved: /Users/chaitanyajongra/Desktop/blackcotton/results/wash_fastness.png
+
+✅ All visualizations generated!
+
+=== PIPELINE COMPLETE ===

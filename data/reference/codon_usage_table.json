@@ -1,0 +1,117 @@
+{
+  "Gossypium_hirsutum": {
+    "organism": "Gossypium hirsutum (Upland Cotton)",
+    "source": "Kazusa Codon Usage Database (kazusa.or.jp/codon) — species ID 3635",
+    "gc_content": 0.43,
+    "num_codons_analyzed": 190636,
+    "notes": "REAL codon usage frequencies from Kazusa database. Compiled from all sequenced G. hirsutum coding sequences in GenBank.",
+    "codon_table": {
+      "F": {
+        "TTT": 0.48,
+        "TTC": 0.52
+      },
+      "L": {
+        "TTA": 0.12,
+        "TTG": 0.24,
+        "CTT": 0.27,
+        "CTC": 0.16,
+        "CTA": 0.08,
+        "CTG": 0.13
+      },
+      "I": {
+        "ATT": 0.45,
+        "ATC": 0.34,
+        "ATA": 0.20
+      },
+      "M": {
+        "ATG": 1.00
+      },
+      "V": {
+        "GTT": 0.41,
+        "GTC": 0.19,
+        "GTA": 0.12,
+        "GTG": 0.27
+      },
+      "S": {
+        "TCT": 0.23,
+        "TCC": 0.17,
+        "TCA": 0.20,
+        "TCG": 0.09,
+        "AGT": 0.15,
+        "AGC": 0.16
+      },
+      "P": {
+        "CCT": 0.38,
+        "CCC": 0.17,
+        "CCA": 0.34,
+        "CCG": 0.11
+      },
+      "T": {
+        "ACT": 0.35,
+        "ACC": 0.27,
+        "ACA": 0.28,
+        "ACG": 0.10
+      },
+      "A": {
+        "GCT": 0.43,
+        "GCC": 0.22,
+        "GCA": 0.27,
+        "GCG": 0.08
+      },
+      "Y": {
+        "TAT": 0.53,
+        "TAC": 0.47
+      },
+      "H": {
+        "CAT": 0.61,
+        "CAC": 0.39
+      },
+      "Q": {
+        "CAA": 0.58,
+        "CAG": 0.42
+      },
+      "N": {
+        "AAT": 0.50,
+        "AAC": 0.50
+      },
+      "K": {
+        "AAA": 0.44,
+        "AAG": 0.56
+      },
+      "D": {
+        "GAT": 0.66,
+        "GAC": 0.34
+      },
+      "E": {
+        "GAA": 0.52,
+        "GAG": 0.48
+      },
+      "C": {
+        "TGT": 0.51,
+        "TGC": 0.49
+      },
+      "W": {
+        "TGG": 1.00
+      },
+      "R": {
+        "CGT": 0.16,
+        "CGC": 0.08,
+        "CGA": 0.12,
+        "CGG": 0.08,
+        "AGA": 0.28,
+        "AGG": 0.26
+      },
+      "G": {
+        "GGT": 0.34,
+        "GGC": 0.18,
+        "GGA": 0.30,
+        "GGG": 0.18
+      },
+      "*": {
+        "TAA": 0.42,
+        "TAG": 0.16,
+        "TGA": 0.42
+      }
+    }
+  }
+}

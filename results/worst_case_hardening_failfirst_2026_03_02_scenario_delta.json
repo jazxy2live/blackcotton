@@ -1,0 +1,38 @@
+[
+  {
+    "scenario": "baseline",
+    "baseline_top_success_rate": 0.0,
+    "hardened_top_success_rate": 0.0,
+    "delta_top_success_rate": 0.0,
+    "baseline_top_robust_score": 0.22053994810247948,
+    "hardened_top_robust_score": 0.0,
+    "delta_top_robust_score": -0.22053994810247948
+  },
+  {
+    "scenario": "strict_gate",
+    "baseline_top_success_rate": 0.0,
+    "hardened_top_success_rate": 0.0,
+    "delta_top_success_rate": 0.0,
+    "baseline_top_robust_score": 0.21365435944695593,
+    "hardened_top_robust_score": 0.0,
+    "delta_top_robust_score": -0.21365435944695593
+  },
+  {
+    "scenario": "high_noise",
+    "baseline_top_success_rate": 0.0,
+    "hardened_top_success_rate": 0.0,
+    "delta_top_success_rate": 0.0,
+    "baseline_top_robust_score": 0.2244236961552613,
+    "hardened_top_robust_score": 0.0,
+    "delta_top_robust_score": -0.2244236961552613
+  },
+  {
+    "scenario": "strict_high_noise",
+    "baseline_top_success_rate": 0.0,
+    "hardened_top_success_rate": 0.0,
+    "delta_top_success_rate": 0.0,
+    "baseline_top_robust_score": 0.2233050249696795,
+    "hardened_top_robust_score": 0.0,
+    "delta_top_robust_score": -0.2233050249696795
+  }
+]

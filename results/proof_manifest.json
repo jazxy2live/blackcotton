@@ -1,0 +1,256 @@
+{
+  "generated_at": "2026-03-02T14:11:08+00:00",
+  "workspace": "/Users/chaitanyajongra/Desktop/blackcotton",
+  "optimizer_summary": {
+    "constraint": "temporal_gap_days >= 0 AND toxicity_pre_cellulose <= threshold (hard)",
+    "num_candidates_coarse": 12848,
+    "num_candidates_refined": 112,
+    "num_pareto_refined": 2,
+    "num_top": 12,
+    "best_composite_score": 0.8431536811330413,
+    "best_darkness_L": 26.1320975041302,
+    "best_strength_g_tex": 29.152696860035274,
+    "best_yield_index": 0.9182167769304437
+  },
+  "adaptive_ode_robust_summary": {
+    "num_input_adaptive_candidates": 3,
+    "num_ode_refined_candidates": 3,
+    "num_ode_pareto": null,
+    "num_ode_top_for_robustness": 3,
+    "n_trials_per_candidate": 120,
+    "seed": 777,
+    "thresholds": {
+      "max_color_L": 25.0,
+      "min_strength_g_tex": 28.0,
+      "min_yield_index": 0.85,
+      "min_temporal_gap_days": 0.0,
+      "max_toxicity_pre_cellulose": 0.09
+    },
+    "noise_model": {
+      "timing_sigma_dpa": 0.75,
+      "strength_cv": 0.08,
+      "competition_cv": 0.12,
+      "efficiency_cv": 0.1,
+      "retention_sigma": 0.05,
+      "hill_cv": 0.08,
+      "leakage_cv": 0.12,
+      "copper_sigma": 0.04,
+      "activation_sigma": 0.05,
+      "ros_cv": 0.1,
+      "silencing_sigma": 0.03,
+      "event_cv_sigma": 0.04
+    },
+    "num_robust_candidates": 3,
+    "num_final_top3": 3,
+    "best_success_rate": 0.8333333333333334,
+    "best_robust_score": 0.8498336920145211
+  },
+  "lead_candidate": {
+    "source": "final_lab_top3",
+    "model_stage": "adaptive_ode_robust",
+    "success_rate": 0.26666666666666666,
+    "robust_score": 0.45534660775794733,
+    "color_L": 21.587192948009452,
+    "strength_g_tex": 29.349740832924248,
+    "yield_index": 0.9343175706260336,
+    "temporal_gap_days": 5.5,
+    "mat_activation_dpa": 42.0,
+    "scw_activation_dpa": 35.0,
+    "mat_strength": 1.0,
+    "scw_strength": 1.2,
+    "k_competition": 0.03,
+    "melanin_efficiency": 1.7,
+    "late_retention_factor": 0.85,
+    "p50_color_L": 21.911476675135376,
+    "p50_strength_g_tex": 29.360557239328585,
+    "p50_yield_index": 0.9357505852490475,
+    "p50_temporal_gap_days": 5.9375
+  },
+  "tests": {
+    "status": "pass",
+    "ran_tests": 28
+  },
+  "artifacts": [
+    {
+      "path": "results/canonical_report.md",
+      "exists": true,
+      "size_bytes": 1347,
+      "sha256": "a2f32b7624d98bdb4ce1e7641e906478d57a277e948cddabf5709154696803af"
+    },
+    {
+      "path": "results/proof_package.md",
+      "exists": true,
+      "size_bytes": 2917,
+      "sha256": "a153e0bb4730f33b3f12931928388aca0dd1b386c19b7cf1f1e9ae5ba3289727"
+    },
+    {
+      "path": "results/one_page_proof_brief.md",
+      "exists": true,
+      "size_bytes": 1379,
+      "sha256": "6011258702c02e4d7c8ae2852c102f98e79528f674f91b44c8702901df8a9746"
+    },
+    {
+      "path": "results/final_lab_top3.json",
+      "exists": true,
+      "size_bytes": 4862,
+      "sha256": "48267dad71b2a0664ad275d1cab24979f51a422ac4302b92f4321fae943c97a7"
+    },
+    {
+      "path": "results/adaptive_ode_robust_summary.json",
+      "exists": true,
+      "size_bytes": 843,
+      "sha256": "f485a8008e198a1d8805f444fb4c0d7ca5638c616f17f5bea9534a7c5713e6bf"
+    },
+    {
+      "path": "results/adaptive_ode_robust_report.md",
+      "exists": true,
+      "size_bytes": 493,
+      "sha256": "bcbd2dfb91832f8f69f3340e8f2ed8940f491d46b4dfee00202fb98dd42b2521"
+    },
+    {
+      "path": "results/test_report.txt",
+      "exists": true,
+      "size_bytes": 4454,
+      "sha256": "6f588e6ff5e937e865bb357956483a902e497a928b3b9f68606bf0e50b495eb2"
+    },
+    {
+      "path": "results/full_pipeline_run.log",
+      "exists": true,
+      "size_bytes": 14170,
+      "sha256": "4e2fc21a802166ca097380f33eb3acbb8dfe1aaf357976eab10fb925d7f4d21f"
+    },
+    {
+      "path": "results/lab_validation_plan.md",
+      "exists": true,
+      "size_bytes": 1296,
+      "sha256": "100ada1eb341e31b4e2dc06682a27ebb2e732c1077ceafd2c3dc44e2f386b946"
+    },
+    {
+      "path": "results/lab_validation_matrix.csv",
+      "exists": true,
+      "size_bytes": 1269,
+      "sha256": "899666db842088cc95e90f11054a5e630caaf362d013033e928479dcdcc684dc"
+    },
+    {
+      "path": "results/lab_measurements_template.csv",
+      "exists": true,
+      "size_bytes": 3365,
+      "sha256": "51071ac1a722c5a26cf3e8db1b229614cb7a60a28fd46ced21499fa04ce40fbb"
+    },
+    {
+      "path": "results/lab_pass_fail_rules.json",
+      "exists": true,
+      "size_bytes": 1466,
+      "sha256": "2dba1d3a2c599724e103029c029eeaae317d92e517d5879881fee9b20ce0ddd4"
+    },
+    {
+      "path": "results/power_analysis_summary.json",
+      "exists": true,
+      "size_bytes": 1412,
+      "sha256": "938906c1740c011f1cd8d00e3f9f4a010ed7ed3e549e1f896e04079155173f6d"
+    },
+    {
+      "path": "results/power_analysis_details.json",
+      "exists": true,
+      "size_bytes": 4401,
+      "sha256": "a963a08467554ef418aa225f0a3e9c6527509476a4d2ce894283c91ebf4d6b8f"
+    },
+    {
+      "path": "results/power_analysis_details.csv",
+      "exists": true,
+      "size_bytes": 1275,
+      "sha256": "af0fc535340924fcf2e9d0a081ec4d17c6c101bf7c0b761f5643b192d8160abe"
+    },
+    {
+      "path": "results/power_analysis_report.md",
+      "exists": true,
+      "size_bytes": 1697,
+      "sha256": "58b8899318154e0b5bd150225ee946fb0fbc1938a988622c6f9da770bfaa10a8"
+    },
+    {
+      "path": "results/adversarial_robustness_summary.json",
+      "exists": true,
+      "size_bytes": 192,
+      "sha256": "d67dfa42023737619b53b10c435b48464545f47c0fb808ef03edf12f16534721"
+    },
+    {
+      "path": "results/adversarial_robustness_scenarios.json",
+      "exists": true,
+      "size_bytes": 3428,
+      "sha256": "cd44bf66e6f8690c61fc44bd9dcc36d13d6ee402ec0300158dd79fe023e54c64"
+    },
+    {
+      "path": "results/adversarial_robustness_rows.json",
+      "exists": true,
+      "size_bytes": 7237,
+      "sha256": "ba5a684df88187af21f9314d5cb124b423e813af9b762c3d173d591d782d5ffe"
+    },
+    {
+      "path": "results/adversarial_robustness_candidate_summary.json",
+      "exists": true,
+      "size_bytes": 1141,
+      "sha256": "f6d73bf4aada49ad8682557d1558a9501d0a158d60dc9a16a17746dd7847878f"
+    },
+    {
+      "path": "results/adversarial_robustness_report.md",
+      "exists": true,
+      "size_bytes": 818,
+      "sha256": "5bc72a368f56089d708bce326a0fa953c5f2dbde3fc8651c20b1e960d6cb7138"
+    },
+    {
+      "path": "results/transcriptome_calibration_summary.json",
+      "exists": true,
+      "size_bytes": 2330,
+      "sha256": "53922094b7ab2f728abd3812ac9dfb532a8723f54054d32df7432442a63ec8e6"
+    },
+    {
+      "path": "results/transcriptome_calibration_expression_comparison.json",
+      "exists": true,
+      "size_bytes": 688,
+      "sha256": "ed48a0b6395cbe70ba550505724d37a661c58154360ca3570b3ada17ad4a6f00"
+    },
+    {
+      "path": "results/transcriptome_calibration_curves.csv",
+      "exists": true,
+      "size_bytes": 2587,
+      "sha256": "c3dd49ada440e4fea727456fe51ef73164ce700e2275897eb72d97d2c9267500"
+    },
+    {
+      "path": "results/transcriptome_calibration_report.md",
+      "exists": true,
+      "size_bytes": 813,
+      "sha256": "508e435543af69a7e0b9e18275ec2c0953de8d0dcf1f0c719af1749fd1098a06"
+    },
+    {
+      "path": "config/parameters_calibrated.yaml",
+      "exists": true,
+      "size_bytes": 2727,
+      "sha256": "955019f7eb844724320d8b1e020a6680edca822d840254eb444626f2b55f70a8"
+    },
+    {
+      "path": "results/calibration_impact_summary.json",
+      "exists": true,
+      "size_bytes": 3635,
+      "sha256": "ac6e574062e9361561f2a758958915e2c7b2204e8f415ea387e694b42b7f2367"
+    },
+    {
+      "path": "results/calibration_impact_baseline.json",
+      "exists": true,
+      "size_bytes": 1070,
+      "sha256": "c58a7633bd086a83da39d1370652b83923b715c461d886b50b02729711c4aac9"
+    },
+    {
+      "path": "results/calibration_impact_calibrated.json",
+      "exists": true,
+      "size_bytes": 1064,
+      "sha256": "75bd2cad498c578395190dea7cc13ba764c51fcc70decdeef2d5fd45535e8fbe"
+    },
+    {
+      "path": "results/calibration_impact_report.md",
+      "exists": true,
+      "size_bytes": 1442,
+      "sha256": "07e64d0cd2bd986165bbdf42d20880248299f8c5af6783a1685a4aae54c05bde"
+    }
+  ],
+  "proof_bundle": "results/proof_bundle_2026-03-02.tgz"
+}

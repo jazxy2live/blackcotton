@@ -1,0 +1,61 @@
+LOCUS       melA_tyrosinase_real  1567 bp    DNA     linear   BCT
+DEFINITION  Streptomyces antibioticus tyrosinase gene (mel) and upstream ORF.
+            REAL SEQUENCE from NCBI accession M11582.1
+ACCESSION   M11582
+VERSION     M11582.1
+KEYWORDS    tyrosinase; melanin; melC2.
+SOURCE      Streptomyces antibioticus
+  ORGANISM  Streptomyces antibioticus
+            Bacteria; Actinomycetota; Actinomycetes; Kitasatosporales;
+            Streptomycetaceae; Streptomyces.
+REFERENCE   1
+  AUTHORS   Bernan,V., Filpula,D., Herber,W., Bibb,M. and Katz,E.
+  TITLE     The nucleotide sequence of the tyrosinase gene from Streptomyces
+            antibioticus and characterization of the gene product
+  JOURNAL   Gene 37 (1-3), 101-110 (1985)
+FEATURES             Location/Qualifiers
+     source          1..1567
+                     /organism="Streptomyces antibioticus"
+                     /mol_type="genomic DNA"
+                     /db_xref="taxon:1890"
+     gene            1..1567
+                     /gene="mel"
+                     /note="includes upstream ORF and tyrosinase coding region"
+     CDS             331..1278
+                     /gene="melC2"
+                     /product="tyrosinase"
+                     /note="Main tyrosinase enzyme. Copper-containing
+                     monooxygenase that catalyzes L-Tyrosine to L-DOPA
+                     (cresolase activity) and L-DOPA to Dopaquinone
+                     (catecholase activity)."
+                     /codon_start=1
+                     /transl_table=11
+ORIGIN
+        1 tgatcacgtc agttttcgca cgtgagccac gccaccggcg gggcgcaccc gcgccaaaga
+       61 ccaccggaag ggacgtccgc tcggaaagga attgcccct tccgcccgtc ggcgaggacc
+      121 nccgcgagca agatcatctt tgttcaacat tgcacgacag atcattaatt gtccggatcg
+      181 cggccaaccg gtccgggccg atttctcccc ttctcctccg gtcgataggt atgcggggtc
+      241 gtcaacccaa cgcaccccag gaggtcccgc atgccggaac tcacccgtcg tcgcgcgctc
+      301 ggcgccgcag ccgtcgtcgc cgccggtgtc ccgctggtcg cccttcccgc cgcccgcgcg
+      361 gacgatcggg ggcaccacac ccccgaggtc cccgggaacc cggccgcgtc cggcgccccc
+      421 gccgccttcg acgagatcta caaggggcgc cggatacagg gccggacggt caccgacggc
+      481 gggggccacc acggcggcgg tcacggcggt gacggtcacg gcggcggcca tcacggcggc
+      541 ggttacgccg tgttcgtgga cggcgtcgaa ctgcatgtga tgcgcaacgc cgacggctcg
+      601 tggatcagcg tcgtcagcca ctacgagccg gtggacaccc cgcgcgccgc ggcccgcgct
+      661 gcggtcgacg agctccaggg cgcccggctc ctccccttcc cctccaactg accttctccc
+      721 ccgcactttt ggagcacccg cacatgaccg tccgcaagaa ccaggcgtcc ctgaccgccg
+      781 aggagaagcg ccgcttcgtc gccgccctgc tcgaactcaa gcgcaccggc cgctacgacg
+      841 ccttcgtcac cacgcacaac gcgttcatcc tgggcgacac cgacaacggc gagcgcaccg
+      901 gccaccgttc gccgtccttc ctgccctggc accgcagatt tctgctggag ttcgagcggg
+      961 cgctccagtc ggtggacgcg tcggtggcgc tgccgtactg ggactggtcc gccgaccggt
+     1021 ccacccggtc ctcgctgtgg gcgccggact tcctcggcgg caccgggcgc agccgggacg
+     1081 gccaggtgat ggacgggccg ttcgccgcgt cggccggcaa ctggccgatc aatgtgcggg
+     1141 tggacggccg tacgttcctg cggcgggcgc tcggcgcggg cgtgagcgaa ctgcccacgc
+     1201 gtgccgaggt cgactcggtg ctggcgatgg cgacgtacga catggcgccc tggaacagcg
+     1261 gctccgacgg cttccgcaac catctcgaag ggtggcgcgg ggtcaatctg cacaaccggg
+     1321 tgcatgtctg ggtcggcggc cagatggcga ccgggtcctc ccccaacgac ccggtgttct
+     1381 ggctgcacca cgcctacatc gacaagctgt gggccgagtg gcagcggcgg caccccctcgt
+     1441 ccccgtatct gccgggcggc ggcacgccga acgtcgtcga cctcaacgag acgatgaagc
+     1501 cgtggaacga caccaccccg gcggccctgc tggaccacac ccggcactac accttcgacg
+     1561 tctgatc
+//

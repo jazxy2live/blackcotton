@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-03-02T13:52:06+00:00",
+  "output_dir": "results/worst_case_hardening_failfirst_v2_2026_03_02_graphs",
+  "files": [
+    "01_strict_high_noise_top_gain.png",
+    "02_scenario_top_success.png",
+    "03_top3_success_distribution.png"
+  ]
+}

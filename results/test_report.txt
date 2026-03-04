@@ -1,0 +1,34 @@
+test_aggregate_worst_case_orders_by_min_success (test_adversarial_robustness_suite.AdversarialRobustnessSuiteTests.test_aggregate_worst_case_orders_by_min_success) ... ok
+test_scale_noise_multiplies_and_caps_retention_sigma (test_adversarial_robustness_suite.AdversarialRobustnessSuiteTests.test_scale_noise_multiplies_and_caps_retention_sigma) ... ok
+test_strict_thresholds_tighten_constraints (test_adversarial_robustness_suite.AdversarialRobustnessSuiteTests.test_strict_thresholds_tighten_constraints) ... ok
+test_delta (test_calibration_impact_analyzer.CalibrationImpactAnalyzerTests.test_delta) ... ok
+test_pick_winner_prefers_higher_worst_case (test_calibration_impact_analyzer.CalibrationImpactAnalyzerTests.test_pick_winner_prefers_higher_worst_case) ... ok
+test_pick_winner_tie (test_calibration_impact_analyzer.CalibrationImpactAnalyzerTests.test_pick_winner_tie) ... ok
+test_recommend_timepoints_covers_switch_windows (test_experiment_power_analyzer.ExperimentPowerAnalyzerTests.test_recommend_timepoints_covers_switch_windows) ... ok
+test_required_n_lower_for_stronger_effect (test_experiment_power_analyzer.ExperimentPowerAnalyzerTests.test_required_n_lower_for_stronger_effect) ... ok
+test_build_candidate_rows_maps_top3_fields (test_lab_validation_planner.LabValidationPlannerTests.test_build_candidate_rows_maps_top3_fields) ... ok
+test_evaluate_gate_true_and_false (test_lab_validation_planner.LabValidationPlannerTests.test_evaluate_gate_true_and_false) ... ok
+test_normalize_candidate_row_accepts_base_candidate (test_optimizer_and_models.AdaptiveODERobustTests.test_normalize_candidate_row_accepts_base_candidate) ... ok
+test_select_final_top_candidates_prefers_success_threshold (test_optimizer_and_models.AdaptiveODERobustTests.test_select_final_top_candidates_prefers_success_threshold) ... ok
+test_targeted_parameter_grid_has_darkness_focused_ranges (test_optimizer_and_models.AdaptiveOptimizerTests.test_targeted_parameter_grid_has_darkness_focused_ranges) ... ok
+test_color_tracks_visible_melanin (test_optimizer_and_models.FiberModelTests.test_color_tracks_visible_melanin) ... ok
+test_melanin_load_decouples_color_from_structural_penalty (test_optimizer_and_models.FiberModelTests.test_melanin_load_decouples_color_from_structural_penalty) ... ok
+test_effective_pigment_levels_is_bounded_and_retention_sensitive (test_optimizer_and_models.OptimizerTests.test_effective_pigment_levels_is_bounded_and_retention_sensitive) ... ok
+test_pareto_front_deduplicates_and_filters_dominated (test_optimizer_and_models.OptimizerTests.test_pareto_front_deduplicates_and_filters_dominated) ... ok
+test_run_sweep_enforces_non_negative_temporal_gap (test_optimizer_and_models.OptimizerTests.test_run_sweep_enforces_non_negative_temporal_gap) ... ok
+test_select_top_candidates_removes_objective_duplicates (test_optimizer_and_models.OptimizerTests.test_select_top_candidates_removes_objective_duplicates) ... ok
+test_select_robust_top_prefers_min_success_pool (test_optimizer_and_models.RobustnessTests.test_select_robust_top_prefers_min_success_pool) ... ok
+test_summarize_trials_tracks_success_and_risks (test_optimizer_and_models.RobustnessTests.test_summarize_trials_tracks_success_and_risks) ... ok
+test_rank_feature_impacts_prioritizes_failure_driver (test_optimizer_and_models.SensitivityTests.test_rank_feature_impacts_prioritizes_failure_driver) ... ok
+test_resolve_mela_returns_valid_cds_structure (test_optimizer_and_models.SequenceResolverTests.test_resolve_mela_returns_valid_cds_structure) ... ok
+test_parse_test_report_reads_ran_and_status (test_proof_packager.ProofPackagerTests.test_parse_test_report_reads_ran_and_status) ... ok
+test_select_lead_candidate_falls_back_to_top_candidates (test_proof_packager.ProofPackagerTests.test_select_lead_candidate_falls_back_to_top_candidates) ... ok
+test_select_lead_candidate_prefers_final_lab_top3 (test_proof_packager.ProofPackagerTests.test_select_lead_candidate_prefers_final_lab_top3) ... ok
+test_fit_single_promoter_improves_over_flat_guess (test_transcriptome_calibrator.TranscriptomeCalibratorTests.test_fit_single_promoter_improves_over_flat_guess) ... ok
+test_weighted_rmse_zero_when_equal (test_transcriptome_calibrator.TranscriptomeCalibratorTests.test_weighted_rmse_zero_when_equal) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.536s
+
+OK
+  ⚠ melC2_CDS_real.fasta is not a valid CDS; falling back to GenBank resolution

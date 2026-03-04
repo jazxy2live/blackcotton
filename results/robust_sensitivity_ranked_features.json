@@ -1,0 +1,123 @@
+[
+  {
+    "feature": "sampled_melanin_efficiency",
+    "impact_score": 1.292453195135341,
+    "corr_success": 0.31830848990997024,
+    "corr_darkness_failure": -0.4809735433163857,
+    "corr_temporal_overlap_failure": 0.033108864389920785,
+    "corr_color_L": -0.7714263292300791,
+    "corr_strength_g_tex": -0.3068279445564263,
+    "corr_yield_index": -0.34579982372988793,
+    "recommended_direction": "increase"
+  },
+  {
+    "feature": "sampled_k_competition",
+    "impact_score": 0.9783991893472253,
+    "corr_success": -0.08609474881191541,
+    "corr_darkness_failure": -0.0913100126794932,
+    "corr_temporal_overlap_failure": 0.05118939250528847,
+    "corr_color_L": -0.2563917419927916,
+    "corr_strength_g_tex": -0.8920084957590566,
+    "corr_yield_index": -0.865599383685126,
+    "recommended_direction": "increase"
+  },
+  {
+    "feature": "sampled_mat_activation_dpa",
+    "impact_score": 0.743423693155105,
+    "corr_success": -0.014224244959059303,
+    "corr_darkness_failure": 0.12006987539372567,
+    "corr_temporal_overlap_failure": -0.4041153685358827,
+    "corr_color_L": 0.15743321789473394,
+    "corr_strength_g_tex": 0.08776122976159388,
+    "corr_yield_index": 0.10264672124283246,
+    "recommended_direction": "increase"
+  },
+  {
+    "feature": "sampled_scw_activation_dpa",
+    "impact_score": 0.4776692507990278,
+    "corr_success": 0.040932882780994786,
+    "corr_darkness_failure": 0.022649097623860193,
+    "corr_temporal_overlap_failure": -0.07519801164353497,
+    "corr_color_L": 0.11759009049718178,
+    "corr_strength_g_tex": 0.3858187986861766,
+    "corr_yield_index": 0.4011562447447903,
+    "recommended_direction": "increase"
+  },
+  {
+    "feature": "sampled_late_retention_factor",
+    "impact_score": 0.4441047003957648,
+    "corr_success": 0.09650498730972926,
+    "corr_darkness_failure": -0.14031675874774863,
+    "corr_temporal_overlap_failure": -0.018326227088325216,
+    "corr_color_L": -0.47499452529123093,
+    "corr_strength_g_tex": -0.16732608250274864,
+    "corr_yield_index": -0.1555858633302442,
+    "recommended_direction": "increase"
+  },
+  {
+    "feature": "sampled_hill_melA",
+    "impact_score": 0.24632291089113859,
+    "corr_success": 0.06417723004227019,
+    "corr_darkness_failure": -0.07889986725150001,
+    "corr_temporal_overlap_failure": -0.016127309489421284,
+    "corr_color_L": -0.10292157713731734,
+    "corr_strength_g_tex": 0.06402504922719292,
+    "corr_yield_index": 0.06680768904646416,
+    "recommended_direction": "increase"
+  },
+  {
+    "feature": "sampled_mat_strength",
+    "impact_score": 0.20675375318073733,
+    "corr_success": 0.017494195058302693,
+    "corr_darkness_failure": -0.03883004088980624,
+    "corr_temporal_overlap_failure": 0.06874555057547667,
+    "corr_color_L": -0.08939275225053218,
+    "corr_strength_g_tex": -0.06446040762178602,
+    "corr_yield_index": -0.06654669284354875,
+    "recommended_direction": "decrease"
+  },
+  {
+    "feature": "sampled_hill_scw",
+    "impact_score": 0.17489765340778735,
+    "corr_success": 0.023629953179392375,
+    "corr_darkness_failure": -0.051053462191790286,
+    "corr_temporal_overlap_failure": 0.05240779977409767,
+    "corr_color_L": -0.05883037790226479,
+    "corr_strength_g_tex": 0.021056365918706303,
+    "corr_yield_index": 0.021202367658722132,
+    "recommended_direction": "decrease"
+  },
+  {
+    "feature": "sampled_scw_strength",
+    "impact_score": 0.09723052682928945,
+    "corr_success": 0.00701137593118192,
+    "corr_darkness_failure": -0.034143646332212445,
+    "corr_temporal_overlap_failure": 0.023861509241547445,
+    "corr_color_L": 0.036892388171824934,
+    "corr_strength_g_tex": -0.01606419846867425,
+    "corr_yield_index": -0.018396388889208696,
+    "recommended_direction": "neutral"
+  },
+  {
+    "feature": "sampled_leak_melA",
+    "impact_score": 0.07321990296634359,
+    "corr_success": -0.02021518193176107,
+    "corr_darkness_failure": 0.005531741916532565,
+    "corr_temporal_overlap_failure": 0.014241912739587243,
+    "corr_color_L": 0.003109782268598448,
+    "corr_strength_g_tex": -0.03488904250394503,
+    "corr_yield_index": -0.03553592515588558,
+    "recommended_direction": "neutral"
+  },
+  {
+    "feature": "sampled_leak_scw",
+    "impact_score": 0.024431562215489193,
+    "corr_success": -0.006065227569656913,
+    "corr_darkness_failure": -0.0029790987906657576,
+    "corr_temporal_overlap_failure": -8.253215307326655e-05,
+    "corr_color_L": 0.0007048121166862422,
+    "corr_strength_g_tex": -0.0173356331886121,
+    "corr_yield_index": -0.017905761199418644,
+    "recommended_direction": "neutral"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "simulation_days": 50.0,
+  "peak_melA_dpa": 50.0,
+  "peak_TYRP1_dpa": 50.0,
+  "peak_DCT_dpa": 50.0,
+  "cellulose_90pct_dpa": 38.375,
+  "max_protein_melA": 1466.6410584721175,
+  "max_protein_TYRP1": 1743.22896738795,
+  "max_protein_DCT": 1743.22896738795
+}

@@ -1,0 +1,16 @@
+# BlackCotton - In Silico Pipeline Dependencies
+
+# Core scientific computing
+numpy>=1.24.0
+scipy>=1.11.0
+matplotlib>=3.7.0
+
+# Bioinformatics
+biopython>=1.81
+
+# Data handling
+pyyaml>=6.0
+pandas>=2.0.0
+
+# Sequence analysis
+python-codon-tables>=0.1.12

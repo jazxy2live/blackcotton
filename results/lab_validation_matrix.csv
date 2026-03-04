@@ -1,0 +1,6 @@
+run_id,arm_type,arm_id,priority_rank,source_input_rank,replicates,mat_activation_dpa,scw_activation_dpa,mat_strength,scw_strength,k_competition,melanin_efficiency,late_retention_factor,pred_success_rate,pred_robust_score,pred_p50_color_L,pred_p50_strength_g_tex,pred_p50_yield_index,pred_p50_temporal_gap_days,pred_p50_toxicity_pre_cellulose,notes
+BC-LAB-2026-03-02,candidate,CAND_1,1,35,8,42.0,35.0,1.0,1.2,0.03,1.7,0.85,0.26666666666666666,0.45534660775794733,21.911476675135376,29.360557239328585,0.9357505852490475,5.9375,0.07091386037814586,Top robust candidate from adaptive ODE pipeline
+BC-LAB-2026-03-02,candidate,CAND_2,2,65,8,42.0,34.0,1.4,1.0,0.12,1.7,0.85,0.26666666666666666,0.4543830784064584,21.815973120074464,29.253643011736894,0.9281653021701557,5.625,0.06884960584737668,Top robust candidate from adaptive ODE pipeline
+BC-LAB-2026-03-02,candidate,CAND_3,3,137,8,42.0,35.0,1.3,1.0,0.07,1.6,0.85,0.2625,0.4516318441239521,22.443043133582957,29.30974112878923,0.9322288175080657,5.625,0.06721649772359328,Top robust candidate from adaptive ODE pipeline
+BC-LAB-2026-03-02,control,CTRL_WHITE_WT,0,0,8,,,,,,,,,,,,,,,Wild-type white cotton control
+BC-LAB-2026-03-02,control,CTRL_DYED_BLACK,0,0,8,,,,,,,,,,,,,,,Commercially dyed black cotton benchmark

@@ -1,0 +1,13 @@
+candidate_arm,candidate_input_rank,endpoint,unit,direction,threshold,mean,sd,n_trial_records,power_at_current_n,required_n_target_power,power_at_required_n_or_max
+CAND_1,1,color_L,L*,lower,25.0,21.530841496767444,1.9781074021492517,120,0.99075,2,0.859
+CAND_1,1,strength_g_tex,g/tex,higher,28.0,29.34318344799003,0.04700543178537097,120,1.0,2,1.0
+CAND_1,1,yield_index,index,higher,0.85,0.9336192172756218,0.0046629731222616435,120,1.0,2,1.0
+CAND_1,1,temporal_gap_days,days,higher,0.0,5.56875,1.0292275495435865,120,1.0,2,1.0
+CAND_2,2,color_L,L*,lower,25.0,21.712027275453238,1.875722890207107,120,0.9985,3,0.85675
+CAND_2,2,strength_g_tex,g/tex,higher,28.0,29.251693636064473,0.07177244632019944,120,1.0,2,1.0
+CAND_2,2,yield_index,index,higher,0.85,0.9281394058539445,0.006399380747307887,120,1.0,2,1.0
+CAND_2,2,temporal_gap_days,days,higher,0.0,5.692708333333333,0.8717520501293713,120,1.0,2,1.0
+CAND_3,3,color_L,L*,lower,25.0,22.18804558138079,1.80204726422129,120,0.997,3,0.8265
+CAND_3,3,strength_g_tex,g/tex,higher,28.0,29.316594660872134,0.06660881809154037,120,1.0,2,1.0
+CAND_3,3,yield_index,index,higher,0.85,0.9329112720762283,0.006145058186007136,120,1.0,2,1.0
+CAND_3,3,temporal_gap_days,days,higher,0.0,5.466666666666667,0.8745847353937487,120,1.0,2,1.0

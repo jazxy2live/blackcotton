@@ -1,0 +1,33 @@
+{
+  "num_coarse_candidates": 12848,
+  "num_seed_candidates": 160,
+  "n_trials_per_seed": 100,
+  "seed": 42,
+  "thresholds": {
+    "max_color_L": 25.0,
+    "min_strength_g_tex": 28.0,
+    "min_yield_index": 0.85,
+    "min_temporal_gap_days": 0.0,
+    "max_toxicity_pre_cellulose": 0.09
+  },
+  "noise_model": {
+    "timing_sigma_dpa": 0.75,
+    "strength_cv": 0.08,
+    "competition_cv": 0.12,
+    "efficiency_cv": 0.1,
+    "retention_sigma": 0.05,
+    "hill_cv": 0.08,
+    "leakage_cv": 0.12,
+    "copper_sigma": 0.04,
+    "activation_sigma": 0.05,
+    "ros_cv": 0.1,
+    "silencing_sigma": 0.03,
+    "event_cv_sigma": 0.04
+  },
+  "min_success_rate_for_shortlist": 0.08,
+  "num_shortlisted": 12,
+  "num_trial_records": 16000,
+  "best_robust_score": 0.24356420917798038,
+  "best_success_rate": 0.0,
+  "best_shortlisted_input_rank": 32
+}

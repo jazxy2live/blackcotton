@@ -1,0 +1,29 @@
+{
+  "baseline": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 41.25,
+    "temporal_gap_days": 2.875
+  },
+  "raw_calibrated": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 38.375,
+    "temporal_gap_days": 0.0
+  },
+  "calibrated": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 38.875,
+    "temporal_gap_days": 0.5
+  },
+  "safety_adjustment": {
+    "min_temporal_gap_days": 0.5,
+    "applied": true,
+    "shift_days": 0.6250000000000023,
+    "achieved_temporal_gap_days": 0.5
+  }
+}

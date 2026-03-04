@@ -1,0 +1,145 @@
+# 🔬 Real Data Sources & Accession Numbers
+# ==========================================
+# This file documents where every piece of real data comes from.
+# Use these to verify, update, or fetch sequences.
+
+# ── GENE SEQUENCES ──────────────────────────────────────────────
+
+# melA Tyrosinase (Streptomyces antibioticus)
+# STATUS: ✅ REAL — downloaded from NCBI
+melA:
+  accession: "M11582.1"
+  organism: "Streptomyces antibioticus"
+  database: "NCBI GenBank"
+  url: "https://www.ncbi.nlm.nih.gov/nuccore/M11582"
+  CDS_range: "331..1278"  # melC2 tyrosinase coding sequence within the locus
+  protein_length_aa: 315
+  notes: >
+    Full locus includes upstream ORF (melC1, copper chaperone) and melC2
+    (tyrosinase). For our construct we need the melC2 CDS (331-1278).
+    Consider also including melC1 as it assists copper loading into tyrosinase.
+    Local resolver now validates CDS structure and falls back to ORF extraction
+    from GenBank if melC2_CDS_real.fasta is malformed.
+
+# TYRP1 (Tyrosinase-Related Protein 1)
+# STATUS: ✅ REAL CDS AVAILABLE — from NCBI RefSeq NM_000550
+TYRP1:
+  accession: "NM_000550.1"  # Human TYRP1 mRNA
+  organism: "Homo sapiens"
+  database: "NCBI RefSeq"
+  url: "https://www.ncbi.nlm.nih.gov/nuccore/NM_000550"
+  CDS_length_bp: 1614
+  protein_length_aa: 537
+  alternative_sources:
+    - accession: "X51420"
+      organism: "Mus musculus"
+      notes: "Mouse TYRP1 (brown locus), well-characterized"
+    - accession: "Various"
+      organism: "Bacillus megaterium"
+      notes: "Bacterial tyrosinase-related, may express better in plant"
+  notes: >
+    Real TYRP1 CDS is now available locally at:
+    data/sequences/TYRP1_CDS_real.fasta
+    Legacy fallback remains:
+    data/sequences/GhTYRP1_optimized.fasta
+
+# DCT / TYRP2 (Dopachrome Tautomerase)
+# STATUS: ✅ REAL CDS AVAILABLE — from NCBI RefSeq NM_001922
+DCT:
+  accession: "L18967"  # Human DCT/TRP-2 cDNA
+  gene_id: 1638
+  organism: "Homo sapiens"
+  database: "NCBI GenBank"
+  url: "https://www.ncbi.nlm.nih.gov/gene/1638"
+  uniprot: "P40126"
+  notes: >
+    Real DCT CDS is now available locally at:
+    data/sequences/DCT_CDS_real.fasta
+    Legacy fallback remains:
+    data/sequences/GhDCT_optimized.fasta
+    Check BRENDA EC 5.3.3.12 for improved kinetic calibration.
+
+# ── PROMOTER SEQUENCES ──────────────────────────────────────────
+
+# STATUS: 🔴 NEED TO EXTRACT FROM COTTON GENOME
+promoters:
+  database: "CottonGen"
+  url: "https://www.cottongen.org/"
+  genome: "Gossypium hirsutum TM-1 reference genome v2.1"
+  strategy: >
+    1. Go to CottonGen JBrowse genome browser
+    2. Search for known maturation-expressed genes:
+       - GhCesA4 (Gh_A05G1046) — cellulose synthase, peak at 25-35 DPA
+       - GhCesA7 (Gh_D11G1572) — similar timing
+       - GhCesA8 (Gh_A13G0433) — late SCW
+       - GhMYBL1 — SCW transcription factor
+       - GhBG1 (beta-glucosidase) — maturation marker
+    3. Extract 1.5-2 kb upstream of each gene's start codon
+    4. Those upstream regions ARE the promoters
+    5. Test in our model by fitting expression data from RNA-seq
+
+# ── ENZYME KINETICS ─────────────────────────────────────────────
+
+# STATUS: 🟡 CAN BE IMPROVED
+enzyme_kinetics:
+  database: "BRENDA"
+  url: "https://www.brenda-enzymes.org/"
+  tyrosinase:
+    EC: "1.14.18.1"
+    published_Km_L_tyrosine:
+      - value_mM: 0.70
+        organism: "B16/C3 murine melanoma"
+        reference: "PMID:6415982"
+      - value_mM: 0.676
+        organism: "Agaricus bisporus (mushroom)"
+        reference: "Scribd literature"
+      - value_mM: 0.465
+        organism: "microencapsulated mushroom"
+        reference: "Tandfonline"
+    published_Km_L_DOPA:
+      - value_mM: 0.60
+        organism: "B16/C3 murine melanoma"
+        reference: "PMID:6415982"
+      - value_mM: 0.66
+        organism: "Agaricus bisporus"
+        reference: "ResearchGate"
+      - value_mM: 0.87
+        organism: "Agaricus bisporus"
+        reference: "NISCPR"
+    our_value_mM: 0.18
+    verdict: "Our Km is lower than most published values — should increase to ~0.5-0.7 mM"
+  DCT:
+    EC: "5.3.3.12"
+  TYRP1:
+    EC: "1.14.18.1"
+    notes: "Shares EC number with tyrosinase but has distinct DHICA oxidase activity"
+
+# ── EXPRESSION DATA ─────────────────────────────────────────────
+
+# STATUS: 🔴 NOT YET INTEGRATED
+expression_data:
+  database: "NCBI GEO / SRA"
+  url: "https://www.ncbi.nlm.nih.gov/geo/"
+  key_datasets:
+    - description: "90 RNA-seq libraries, 10 DPA timepoints, 3 cultivars"
+      timepoints: [-3, -1, 0, 1, 3, 5, 10, 15, 20, 25]
+      cultivars: ["TM-1", "Hai7124", "3-79"]
+    - description: "380+ RNA-seq datasets remapped, 18 tissues, 34 cultivars"
+      source: "Frontiers in Plant Science"
+    - description: "7-timepoint mutant vs wild-type fiber development"
+      source: "MDPI"
+  how_to_use: >
+    Download FPKM/TPM values for CesA4/7/8 genes across DPA timepoints.
+    These give REAL promoter activity curves that we can fit our Hill
+    functions to, instead of guessing activation/peak DPA values.
+
+# ── CODON USAGE ─────────────────────────────────────────────────
+
+# STATUS: ✅ REAL — downloaded from Kazusa
+codon_usage:
+  database: "Kazusa Codon Usage Database"
+  url: "https://www.kazusa.or.jp/codon/cgi-bin/showcodon.cgi?species=3635"
+  species_id: 3635
+  organism: "Gossypium hirsutum"
+  num_codons: 190636
+  notes: "Updated 2025-03-01. All frequencies match published Kazusa data."

@@ -1,0 +1,46 @@
+{
+  "run_id": "BC-LAB-2026-03-02",
+  "phase1_gate": {
+    "description": "Minimum gate to continue candidate in this project.",
+    "max_color_L": 25.0,
+    "min_strength_g_tex": 28.0,
+    "min_yield_index": 0.85,
+    "min_temporal_gap_days": 0.0
+  },
+  "phase2_stretch_gate": {
+    "description": "Stricter target for partner demo readiness.",
+    "max_color_L": 22.0,
+    "min_strength_g_tex": 28.5,
+    "min_yield_index": 0.88,
+    "min_temporal_gap_days": 0.5
+  },
+  "candidate_expectations": [
+    {
+      "arm_id": "CAND_1",
+      "pred_success_rate": 0.26666666666666666,
+      "pred_robust_score": 0.45534660775794733,
+      "pred_p50_color_L": 21.911476675135376,
+      "pred_p50_strength_g_tex": 29.360557239328585,
+      "pred_p50_yield_index": 0.9357505852490475,
+      "pred_p50_temporal_gap_days": 5.9375
+    },
+    {
+      "arm_id": "CAND_2",
+      "pred_success_rate": 0.26666666666666666,
+      "pred_robust_score": 0.4543830784064584,
+      "pred_p50_color_L": 21.815973120074464,
+      "pred_p50_strength_g_tex": 29.253643011736894,
+      "pred_p50_yield_index": 0.9281653021701557,
+      "pred_p50_temporal_gap_days": 5.625
+    },
+    {
+      "arm_id": "CAND_3",
+      "pred_success_rate": 0.2625,
+      "pred_robust_score": 0.4516318441239521,
+      "pred_p50_color_L": 22.443043133582957,
+      "pred_p50_strength_g_tex": 29.30974112878923,
+      "pred_p50_yield_index": 0.9322288175080657,
+      "pred_p50_temporal_gap_days": 5.625
+    }
+  ]
+}

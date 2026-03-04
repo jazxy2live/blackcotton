@@ -1,0 +1,176 @@
+{
+  "name": "pBC-MelaninCotton-v2",
+  "total_length_bp": 8194,
+  "gc_content": 0.4635098852819136,
+  "num_cassettes": 4,
+  "cassettes": [
+    {
+      "name": "Melanin Primary (melA)",
+      "length_bp": 1832,
+      "promoter": {
+        "name": "pGhMat1",
+        "length": 658
+      },
+      "gene": {
+        "name": "melA",
+        "length": 921
+      },
+      "terminator": {
+        "name": "tNOS",
+        "length": 253
+      },
+      "description": "Primary melanin enzyme. Converts L-Tyrosine \u2192 L-DOPA \u2192 Dopaquinone. Driven by maturation promoter to fire AFTER cellulose deposition."
+    },
+    {
+      "name": "TYRP1 Support",
+      "length_bp": 2416,
+      "promoter": {
+        "name": "pGhSCW-late",
+        "length": 549
+      },
+      "gene": {
+        "name": "TYRP1",
+        "length": 1614
+      },
+      "terminator": {
+        "name": "tNOS",
+        "length": 253
+      },
+      "description": "Stabilizes melanin intermediates. Prevents toxic accumulation of dopaquinone by channeling it toward eumelanin."
+    },
+    {
+      "name": "DCT Support",
+      "length_bp": 2362,
+      "promoter": {
+        "name": "pGhSCW-late",
+        "length": 549
+      },
+      "gene": {
+        "name": "DCT",
+        "length": 1560
+      },
+      "terminator": {
+        "name": "tNOS",
+        "length": 253
+      },
+      "description": "Converts dopachrome to DHICA, improving melanin polymer quality and ensuring deep black color (vs. brown)."
+    },
+    {
+      "name": "Selection Marker (nptII)",
+      "length_bp": 1534,
+      "promoter": {
+        "name": "p35S",
+        "length": 486
+      },
+      "gene": {
+        "name": "nptII",
+        "length": 795
+      },
+      "terminator": {
+        "name": "tNOS",
+        "length": 253
+      },
+      "description": "Constitutive kanamycin resistance for transgenic selection."
+    }
+  ],
+  "features": [
+    {
+      "name": "LB",
+      "type": "T-DNA_border",
+      "start": 0,
+      "end": 25,
+      "strand": "+"
+    },
+    {
+      "name": "pGhMat1",
+      "type": "promoter",
+      "start": 25,
+      "end": 683,
+      "strand": "+"
+    },
+    {
+      "name": "melA",
+      "type": "CDS",
+      "start": 683,
+      "end": 1604,
+      "strand": "+"
+    },
+    {
+      "name": "tNOS",
+      "type": "terminator",
+      "start": 1604,
+      "end": 1857,
+      "strand": "+"
+    },
+    {
+      "name": "pGhSCW-late",
+      "type": "promoter",
+      "start": 1857,
+      "end": 2406,
+      "strand": "+"
+    },
+    {
+      "name": "TYRP1",
+      "type": "CDS",
+      "start": 2406,
+      "end": 4020,
+      "strand": "+"
+    },
+    {
+      "name": "tNOS",
+      "type": "terminator",
+      "start": 4020,
+      "end": 4273,
+      "strand": "+"
+    },
+    {
+      "name": "pGhSCW-late",
+      "type": "promoter",
+      "start": 4273,
+      "end": 4822,
+      "strand": "+"
+    },
+    {
+      "name": "DCT",
+      "type": "CDS",
+      "start": 4822,
+      "end": 6382,
+      "strand": "+"
+    },
+    {
+      "name": "tNOS",
+      "type": "terminator",
+      "start": 6382,
+      "end": 6635,
+      "strand": "+"
+    },
+    {
+      "name": "p35S",
+      "type": "promoter",
+      "start": 6635,
+      "end": 7121,
+      "strand": "+"
+    },
+    {
+      "name": "nptII",
+      "type": "CDS",
+      "start": 7121,
+      "end": 7916,
+      "strand": "+"
+    },
+    {
+      "name": "tNOS",
+      "type": "terminator",
+      "start": 7916,
+      "end": 8169,
+      "strand": "+"
+    },
+    {
+      "name": "RB",
+      "type": "T-DNA_border",
+      "start": 8169,
+      "end": 8194,
+      "strand": "+"
+    }
+  ]
+}

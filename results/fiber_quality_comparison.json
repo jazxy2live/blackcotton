@@ -1,0 +1,74 @@
+[
+  {
+    "name": "White Cotton (Coker-312)",
+    "uhml_mm": 30.0,
+    "strength_g_tex": 30.0,
+    "micronaire": 4.2,
+    "uniformity_pct": 83.0,
+    "color_L": 82.0,
+    "color_a": 1.5,
+    "color_b": 8.0,
+    "cellulose_pct": 95.0,
+    "grade": "GOOD"
+  },
+  {
+    "name": "Natural Brown Cotton",
+    "uhml_mm": 22.5,
+    "strength_g_tex": 21.0,
+    "micronaire": 3.2,
+    "uniformity_pct": 74.7,
+    "color_L": 45.0,
+    "color_a": 8.0,
+    "color_b": 18.0,
+    "cellulose_pct": 82.0,
+    "grade": "BELOW-GRADE"
+  },
+  {
+    "name": "Dyed Black Cotton",
+    "uhml_mm": 29.4,
+    "strength_g_tex": 28.5,
+    "micronaire": 4.2,
+    "uniformity_pct": 83.0,
+    "color_L": 12.0,
+    "color_a": -0.5,
+    "color_b": -1.0,
+    "cellulose_pct": 93.0,
+    "grade": "GOOD"
+  },
+  {
+    "name": "Engineered Black (mel=100%, ovlp=0%)",
+    "uhml_mm": 30.0,
+    "strength_g_tex": 30.0,
+    "micronaire": 4.2,
+    "uniformity_pct": 83.0,
+    "color_L": 10.0,
+    "color_a": -0.5,
+    "color_b": -1.0,
+    "cellulose_pct": 93.0,
+    "grade": "GOOD"
+  },
+  {
+    "name": "Engineered Black (mel=70%, ovlp=0%)",
+    "uhml_mm": 30.0,
+    "strength_g_tex": 30.0,
+    "micronaire": 4.2,
+    "uniformity_pct": 83.0,
+    "color_L": 31.6,
+    "color_a": 0.10000000000000009,
+    "color_b": 1.7000000000000002,
+    "cellulose_pct": 93.6,
+    "grade": "GOOD"
+  },
+  {
+    "name": "Engineered Black (mel=100%, ovlp=20%)",
+    "uhml_mm": 27.299999999999997,
+    "strength_g_tex": 27.299999999999997,
+    "micronaire": 4.074,
+    "uniformity_pct": 81.34,
+    "color_L": 10.0,
+    "color_a": -0.5,
+    "color_b": -1.0,
+    "cellulose_pct": 89.5,
+    "grade": "BASE"
+  }
+]

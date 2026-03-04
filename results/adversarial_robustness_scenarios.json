@@ -1,0 +1,114 @@
+[
+  {
+    "scenario": "baseline",
+    "description": "Current production thresholds and uncertainty model.",
+    "thresholds": {
+      "max_color_L": 25.0,
+      "min_strength_g_tex": 28.0,
+      "min_yield_index": 0.85,
+      "min_temporal_gap_days": 0.0,
+      "max_toxicity_pre_cellulose": 0.09
+    },
+    "noise": {
+      "timing_sigma_dpa": 0.75,
+      "strength_cv": 0.08,
+      "competition_cv": 0.12,
+      "efficiency_cv": 0.1,
+      "retention_sigma": 0.05,
+      "hill_cv": 0.08,
+      "leakage_cv": 0.12,
+      "copper_sigma": 0.04,
+      "activation_sigma": 0.05,
+      "ros_cv": 0.1,
+      "silencing_sigma": 0.03,
+      "event_cv_sigma": 0.04
+    },
+    "top_candidate_input_rank": 3,
+    "top_success_rate": 0.7958333333333333,
+    "top_robust_score": 0.8241779939720768
+  },
+  {
+    "scenario": "strict_gate",
+    "description": "Stricter pass/fail gates, same uncertainty model.",
+    "thresholds": {
+      "max_color_L": 22.0,
+      "min_strength_g_tex": 28.5,
+      "min_yield_index": 0.88,
+      "min_temporal_gap_days": 0.5,
+      "max_toxicity_pre_cellulose": 0.08
+    },
+    "noise": {
+      "timing_sigma_dpa": 0.75,
+      "strength_cv": 0.08,
+      "competition_cv": 0.12,
+      "efficiency_cv": 0.1,
+      "retention_sigma": 0.05,
+      "hill_cv": 0.08,
+      "leakage_cv": 0.12,
+      "copper_sigma": 0.04,
+      "activation_sigma": 0.05,
+      "ros_cv": 0.1,
+      "silencing_sigma": 0.03,
+      "event_cv_sigma": 0.04
+    },
+    "top_candidate_input_rank": 3,
+    "top_success_rate": 0.2916666666666667,
+    "top_robust_score": 0.4736418090617906
+  },
+  {
+    "scenario": "high_noise",
+    "description": "Current gates with heavier biological/process uncertainty.",
+    "thresholds": {
+      "max_color_L": 25.0,
+      "min_strength_g_tex": 28.0,
+      "min_yield_index": 0.85,
+      "min_temporal_gap_days": 0.0,
+      "max_toxicity_pre_cellulose": 0.09
+    },
+    "noise": {
+      "timing_sigma_dpa": 1.35,
+      "strength_cv": 0.14400000000000002,
+      "competition_cv": 0.216,
+      "efficiency_cv": 0.18000000000000002,
+      "retention_sigma": 0.09000000000000001,
+      "hill_cv": 0.14400000000000002,
+      "leakage_cv": 0.216,
+      "copper_sigma": 0.07200000000000001,
+      "activation_sigma": 0.09000000000000001,
+      "ros_cv": 0.18000000000000002,
+      "silencing_sigma": 0.054,
+      "event_cv_sigma": 0.07200000000000001
+    },
+    "top_candidate_input_rank": 1,
+    "top_success_rate": 0.6,
+    "top_robust_score": 0.6866886258688712
+  },
+  {
+    "scenario": "strict_high_noise",
+    "description": "Strict gates plus heavy uncertainty (worst-case in-silico).",
+    "thresholds": {
+      "max_color_L": 22.0,
+      "min_strength_g_tex": 28.5,
+      "min_yield_index": 0.88,
+      "min_temporal_gap_days": 0.5,
+      "max_toxicity_pre_cellulose": 0.08
+    },
+    "noise": {
+      "timing_sigma_dpa": 1.35,
+      "strength_cv": 0.14400000000000002,
+      "competition_cv": 0.216,
+      "efficiency_cv": 0.18000000000000002,
+      "retention_sigma": 0.09000000000000001,
+      "hill_cv": 0.14400000000000002,
+      "leakage_cv": 0.216,
+      "copper_sigma": 0.07200000000000001,
+      "activation_sigma": 0.09000000000000001,
+      "ros_cv": 0.18000000000000002,
+      "silencing_sigma": 0.054,
+      "event_cv_sigma": 0.07200000000000001
+    },
+    "top_candidate_input_rank": 3,
+    "top_success_rate": 0.24166666666666667,
+    "top_robust_score": 0.43751902944938825
+  }
+]

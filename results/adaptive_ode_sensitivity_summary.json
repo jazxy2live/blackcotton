@@ -1,0 +1,12 @@
+{
+  "n_trial_records": 360,
+  "n_candidate_ranks": 3,
+  "overall_success_rate": 0.9916666666666667,
+  "failure_mode_rates": {
+    "darkness_failure": 0.005555555555555556,
+    "temporal_overlap_failure": 0.002777777777777778,
+    "strength_failure": 0.0,
+    "yield_failure": 0.0
+  },
+  "primary_failure_mode": "darkness_failure"
+}

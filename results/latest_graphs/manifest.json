@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-03-02T09:05:58+00:00",
+  "source_summary": "results/calibration_impact_summary.json",
+  "source_curves": "results/transcriptome_calibration_curves.csv",
+  "output_dir": "results/latest_graphs",
+  "files": [
+    "01_optimization_footprint.png",
+    "02_expression_timing.png",
+    "03_robustness_comparison.png",
+    "04_deterministic_metrics.png",
+    "05_calibration_fit_curves.png"
+  ]
+}

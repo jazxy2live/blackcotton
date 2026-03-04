@@ -1,0 +1,75 @@
+================================================================================
+  CONSTRUCT: pBC-MelaninCotton-v2
+  Total Length: 8,194 bp
+================================================================================
+
+  LB ── [pGhMat1 → melA → tNOS] ── [pGhSCW-late → TYRP1 → tNOS] ── [pGhSCW-late → DCT → tNOS] ── [p35S → nptII → tNOS] ── RB
+
+  FEATURE TABLE
+  ----------------------------------------------------------------------------
+  Feature                   Type               Start      End   Length
+  ----------------------------------------------------------------------------
+  LB                        T-DNA_border           0       25       25
+  pGhMat1                   promoter              25      683      658
+  melA                      CDS                  683     1604      921
+  tNOS                      terminator          1604     1857      253
+  pGhSCW-late               promoter            1857     2406      549
+  TYRP1                     CDS                 2406     4020     1614
+  tNOS                      terminator          4020     4273      253
+  pGhSCW-late               promoter            4273     4822      549
+  DCT                       CDS                 4822     6382     1560
+  tNOS                      terminator          6382     6635      253
+  p35S                      promoter            6635     7121      486
+  nptII                     CDS                 7121     7916      795
+  tNOS                      terminator          7916     8169      253
+  RB                        T-DNA_border        8169     8194       25
+  ----------------------------------------------------------------------------
+
+  CASSETTE DETAILS
+  ----------------------------------------------------------------------------
+  Cassette 1: Melanin Primary (melA)
+    Promoter:   pGhMat1 (658 bp)
+    Gene:       melA (921 bp)
+    Terminator: tNOS (253 bp)
+    Total:      1832 bp
+    Function:   Primary melanin enzyme. Converts L-Tyrosine → L-DOPA → Dopaquinone. Driven by maturation promoter to fire AFTER cellulose deposition.
+
+  Cassette 2: TYRP1 Support
+    Promoter:   pGhSCW-late (549 bp)
+    Gene:       TYRP1 (1614 bp)
+    Terminator: tNOS (253 bp)
+    Total:      2416 bp
+    Function:   Stabilizes melanin intermediates. Prevents toxic accumulation of dopaquinone by channeling it toward eumelanin.
+
+  Cassette 3: DCT Support
+    Promoter:   pGhSCW-late (549 bp)
+    Gene:       DCT (1560 bp)
+    Terminator: tNOS (253 bp)
+    Total:      2362 bp
+    Function:   Converts dopachrome to DHICA, improving melanin polymer quality and ensuring deep black color (vs. brown).
+
+  Cassette 4: Selection Marker (nptII)
+    Promoter:   p35S (486 bp)
+    Gene:       nptII (795 bp)
+    Terminator: tNOS (253 bp)
+    Total:      1534 bp
+    Function:   Constitutive kanamycin resistance for transgenic selection.
+
+  SEQUENCE COMPOSITION
+  ----------------------------------------------------------------------------
+  GC Content: 46.4%
+  AT Content: 53.6%
+  A: 2,189  T: 2,207  G: 1,934  C: 1,864
+
+  RESTRICTION SITE SCAN (sites to avoid)
+  ----------------------------------------------------------------------------
+  EcoRI      (GAATTC): ⚠ FOUND (8x)
+  BamHI      (GGATCC): ⚠ FOUND (4x)
+  HindIII    (AAGCTT): ⚠ FOUND (4x)
+  BsaI       (GGTCTC): ⚠ FOUND (2x)
+  BsmBI      (CGTCTC): ⚠ FOUND (1x)
+  NotI       (GCGGCCGC): ✓ CLEAR
+  XbaI       (TCTAGA): ⚠ FOUND (2x)
+  SacI       (GAGCTC): ⚠ FOUND (4x)
+
+================================================================================

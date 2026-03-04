@@ -1,0 +1,23 @@
+{
+  "n_input_candidates": 12,
+  "n_trials_per_candidate": 120,
+  "seed": 42,
+  "thresholds": {
+    "max_color_L": 25.0,
+    "min_strength_g_tex": 28.0,
+    "min_yield_index": 0.85,
+    "min_temporal_gap_days": 0.0
+  },
+  "noise_model": {
+    "timing_sigma_dpa": 0.75,
+    "strength_cv": 0.08,
+    "competition_cv": 0.12,
+    "efficiency_cv": 0.1,
+    "retention_sigma": 0.05,
+    "hill_cv": 0.08,
+    "leakage_cv": 0.12
+  },
+  "best_input_rank": 9,
+  "best_robust_score": 0.31592938298119977,
+  "best_success_rate": 0.1
+}

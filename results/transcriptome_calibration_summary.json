@@ -1,0 +1,82 @@
+{
+  "generated_at": "2026-03-02T08:58:39+00:00",
+  "reference_table": "data/reference/cotton_expression_reference.csv",
+  "output_config": "config/parameters_calibrated.yaml",
+  "baseline_rmse": {
+    "pGhSCW_late": 0.27664650753422615,
+    "pGhMat1": 0.1723569334763983,
+    "mean": 0.22450172050531222
+  },
+  "calibrated_rmse": {
+    "pGhSCW_late": 0.012820284761713801,
+    "pGhMat1": 0.010500968534475982,
+    "mean": 0.01166062664809489
+  },
+  "promoter_baseline": {
+    "pGhSCW_late": {
+      "activation_dpa": 32.0,
+      "peak_dpa": 38.0,
+      "hill_coefficient": 6.0,
+      "leakage_fraction": 0.02,
+      "strength_relative": 1.0
+    },
+    "pGhMat1": {
+      "activation_dpa": 40.0,
+      "peak_dpa": 45.0,
+      "hill_coefficient": 8.0,
+      "leakage_fraction": 0.01,
+      "strength_relative": 1.0
+    }
+  },
+  "promoter_calibrated": {
+    "pGhSCW_late": {
+      "activation_dpa": 23.716936354286187,
+      "peak_dpa": 26.438372086199486,
+      "hill_coefficient": 6.524308545371876,
+      "leakage_fraction": 0.03387199132849596,
+      "strength_relative": 1.016378254426777
+    },
+    "pGhMat1": {
+      "activation_dpa": 31.130384577306526,
+      "peak_dpa": 43.85155038626375,
+      "hill_coefficient": 9.754848827007446,
+      "leakage_fraction": 0.021377271045937868,
+      "strength_relative": 1.071671134822769
+    }
+  },
+  "expression_snapshot_baseline": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 41.25,
+    "temporal_gap_days": 2.875
+  },
+  "expression_snapshot_raw_calibrated": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 38.375,
+    "temporal_gap_days": 0.0
+  },
+  "expression_snapshot_calibrated": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 38.875,
+    "temporal_gap_days": 0.5
+  },
+  "safety_adjustment": {
+    "min_temporal_gap_days": 0.5,
+    "applied": true,
+    "shift_days": 0.6250000000000023,
+    "achieved_temporal_gap_days": 0.5
+  },
+  "improvements": {
+    "scw_rmse_delta": -0.26382622277251233,
+    "mat_rmse_delta": -0.1618559649419223,
+    "mean_rmse_delta": -0.21284109385721733
+  },
+  "files": {
+    "curves_csv": "results/transcriptome_calibration_curves.csv"
+  }
+}

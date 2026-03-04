@@ -1,0 +1,38 @@
+{
+  "label": "calibrated",
+  "n_coarse": 21952,
+  "n_seed": 96,
+  "n_refined": 96,
+  "n_pareto": 3,
+  "n_top": 12,
+  "expression_snapshot": {
+    "melA_peak_dpa": 50.0,
+    "TYRP1_peak_dpa": 50.0,
+    "cellulose_90pct_dpa": 38.375,
+    "melA_halfmax_dpa": 38.875,
+    "temporal_gap_days": 0.5
+  },
+  "deterministic_best": {
+    "color_L": 17.524104954380505,
+    "strength_g_tex": 29.12327171343855,
+    "yield_index": 0.910966817193428,
+    "temporal_gap_days": 3.5416666666666643,
+    "composite_score": 0.8954655786488435
+  },
+  "robust_default_best": {
+    "success_rate": 0.19166666666666668,
+    "robust_score": 0.3819286692824303,
+    "p50_color_L": 27.743198457227727,
+    "p50_strength_g_tex": 28.86457373517288,
+    "p50_yield_index": 0.8937915157408327,
+    "p50_temporal_gap_days": 1.0
+  },
+  "robust_worst_case_best": {
+    "success_rate": 0.075,
+    "robust_score": 0.298187204207626,
+    "p50_color_L": 28.87711036134053,
+    "p50_strength_g_tex": 28.90358695519342,
+    "p50_yield_index": 0.897272484073576,
+    "p50_temporal_gap_days": 1.375
+  }
+}
