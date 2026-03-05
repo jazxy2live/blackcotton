@@ -6,10 +6,11 @@ Predicts metrics and compares engineered black cotton against conventional.
 """
 
 import numpy as np
-import yaml
 import json
 from pathlib import Path
 from dataclasses import dataclass
+
+from src.config_loader import load_config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = BASE_DIR / "config"
@@ -17,8 +18,7 @@ RESULTS_DIR = BASE_DIR / "results"
 
 
 def load_params():
-    with open(CONFIG_DIR / "parameters.yaml") as f:
-        return yaml.safe_load(f)
+    return load_config()
 
 
 @dataclass

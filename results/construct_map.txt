@@ -1,9 +1,9 @@
 ================================================================================
   CONSTRUCT: pBC-MelaninCotton-v2
-  Total Length: 8,194 bp
+  Total Length: 8,437 bp
 ================================================================================
 
-  LB ── [pGhMat1 → melA → tNOS] ── [pGhSCW-late → TYRP1 → tNOS] ── [pGhSCW-late → DCT → tNOS] ── [p35S → nptII → tNOS] ── RB
+  LB ── [pGhMat1 → melA_vTP → tNOS] ── [pGhSCW-late → TYRP1_vTP → tNOS] ── [pGhSCW-late → DCT_vTP → tNOS] ── [p35S → nptII → tNOS] ── RB
 
   FEATURE TABLE
   ----------------------------------------------------------------------------
@@ -11,41 +11,41 @@
   ----------------------------------------------------------------------------
   LB                        T-DNA_border           0       25       25
   pGhMat1                   promoter              25      683      658
-  melA                      CDS                  683     1604      921
-  tNOS                      terminator          1604     1857      253
-  pGhSCW-late               promoter            1857     2406      549
-  TYRP1                     CDS                 2406     4020     1614
-  tNOS                      terminator          4020     4273      253
-  pGhSCW-late               promoter            4273     4822      549
-  DCT                       CDS                 4822     6382     1560
-  tNOS                      terminator          6382     6635      253
-  p35S                      promoter            6635     7121      486
-  nptII                     CDS                 7121     7916      795
-  tNOS                      terminator          7916     8169      253
-  RB                        T-DNA_border        8169     8194       25
+  melA_vTP                  CDS                  683     1688     1005
+  tNOS                      terminator          1688     1941      253
+  pGhSCW-late               promoter            1941     2490      549
+  TYRP1_vTP                 CDS                 2490     4185     1695
+  tNOS                      terminator          4185     4438      253
+  pGhSCW-late               promoter            4438     4987      549
+  DCT_vTP                   CDS                 4987     6625     1638
+  tNOS                      terminator          6625     6878      253
+  p35S                      promoter            6878     7364      486
+  nptII                     CDS                 7364     8159      795
+  tNOS                      terminator          8159     8412      253
+  RB                        T-DNA_border        8412     8437       25
   ----------------------------------------------------------------------------
 
   CASSETTE DETAILS
   ----------------------------------------------------------------------------
   Cassette 1: Melanin Primary (melA)
     Promoter:   pGhMat1 (658 bp)
-    Gene:       melA (921 bp)
+    Gene:       melA_vTP (1005 bp)
     Terminator: tNOS (253 bp)
-    Total:      1832 bp
+    Total:      1916 bp
     Function:   Primary melanin enzyme. Converts L-Tyrosine → L-DOPA → Dopaquinone. Driven by maturation promoter to fire AFTER cellulose deposition.
 
   Cassette 2: TYRP1 Support
     Promoter:   pGhSCW-late (549 bp)
-    Gene:       TYRP1 (1614 bp)
+    Gene:       TYRP1_vTP (1695 bp)
     Terminator: tNOS (253 bp)
-    Total:      2416 bp
+    Total:      2497 bp
     Function:   Stabilizes melanin intermediates. Prevents toxic accumulation of dopaquinone by channeling it toward eumelanin.
 
   Cassette 3: DCT Support
     Promoter:   pGhSCW-late (549 bp)
-    Gene:       DCT (1560 bp)
+    Gene:       DCT_vTP (1638 bp)
     Terminator: tNOS (253 bp)
-    Total:      2362 bp
+    Total:      2440 bp
     Function:   Converts dopachrome to DHICA, improving melanin polymer quality and ensuring deep black color (vs. brown).
 
   Cassette 4: Selection Marker (nptII)
@@ -57,9 +57,9 @@
 
   SEQUENCE COMPOSITION
   ----------------------------------------------------------------------------
-  GC Content: 46.4%
-  AT Content: 53.6%
-  A: 2,189  T: 2,207  G: 1,934  C: 1,864
+  GC Content: 46.6%
+  AT Content: 53.4%
+  A: 2,215  T: 2,289  G: 1,982  C: 1,951
 
   RESTRICTION SITE SCAN (sites to avoid)
   ----------------------------------------------------------------------------

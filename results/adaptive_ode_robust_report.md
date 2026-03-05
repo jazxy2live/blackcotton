@@ -1,13 +1,22 @@
-# Adaptive ODE Robust Final Report (Promoted Hardened Top3)
+# Adaptive ODE Robust Final Report
 
-- Candidates evaluated: `3`
-- Trials per candidate: `120`
-- Best success rate: `0.833`
-- Best robust score: `0.850`
+Finalization pipeline: adaptive robust shortlist -> ODE refinement -> robustness -> lab Top 3.
 
-| Rank | Success | Robust | Fragility | p50 L* | p50 Str | p50 Yield | p50 Toxicity |
-|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 0.833 | 0.850 | 0.045 | 22.24 | 29.33 | 0.934 | 0.067 |
-| 2 | 0.800 | 0.828 | 0.052 | 21.26 | 29.26 | 0.929 | 0.071 |
-| 3 | 0.708 | 0.764 | 0.075 | 21.69 | 29.34 | 0.934 | 0.079 |
+## Summary
+
+- Input adaptive candidates: `12`
+- ODE refined candidates: `12`
+- ODE pareto candidates: `1`
+- ODE top candidates for robustness: `6`
+- Robust trials per candidate: `120`
+- Best robust success rate: `0.883`
+- Best robust score: `0.880`
+
+## Final Lab Top 3
+
+| Rank | Success | Robust | p50 L* | p50 Str | p50 Yield | Risk Gap | Risk Dark | Params |
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 1 | 0.883 | 0.880 | 22.16 | 28.72 | 0.886 | 0.000 | 0.117 | 38/34, k=0.20, eff=1.60, ret=0.75 |
+| 2 | 0.858 | 0.864 | 22.36 | 28.95 | 0.902 | 0.008 | 0.133 | 38/34, k=0.10, eff=1.60, ret=0.75 |
+| 3 | 0.858 | 0.864 | 22.28 | 28.90 | 0.899 | 0.000 | 0.142 | 38/34, k=0.15, eff=1.60, ret=0.75 |
 

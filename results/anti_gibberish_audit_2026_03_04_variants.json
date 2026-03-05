@@ -1,0 +1,612 @@
+[
+  {
+    "variant_id": "all_off",
+    "label": "All Off (control)",
+    "switches": {
+      "traffic": false,
+      "storage": false,
+      "transit": false
+    },
+    "strict_pool_size": 1296,
+    "strict_seed_candidates": 120,
+    "strict_top_success_rate": 0.3,
+    "strict_top_robust_score": 0.47729262614251944,
+    "strict_top_fragility": 0.22208333333333335,
+    "strict_top_candidate": {
+      "color_L": 21.922339109460466,
+      "strength_g_tex": 29.234599942569748,
+      "yield_index": 0.9267516521309158,
+      "temporal_gap_days": 5.375,
+      "toxicity_pre_cellulose": 0.07201559309389216,
+      "mat_activation_dpa": 42.0,
+      "scw_activation_dpa": 34.0,
+      "mat_strength": 1.3,
+      "scw_strength": 1.0,
+      "k_competition": 0.12,
+      "melanin_efficiency": 1.6,
+      "late_retention_factor": 0.85
+    },
+    "strict_top3": [
+      {
+        "success_rate": 0.3,
+        "robust_score": 0.47729262614251944,
+        "fragility_index": 0.22208333333333335,
+        "base_candidate": {
+          "color_L": 21.922339109460466,
+          "strength_g_tex": 29.234599942569748,
+          "yield_index": 0.9267516521309158,
+          "temporal_gap_days": 5.375,
+          "toxicity_pre_cellulose": 0.07201559309389216,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 34.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.0,
+          "k_competition": 0.12,
+          "melanin_efficiency": 1.6,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.2916666666666667,
+        "robust_score": 0.47240348860640374,
+        "fragility_index": 0.22125,
+        "base_candidate": {
+          "color_L": 20.439545618725845,
+          "strength_g_tex": 29.28622579439385,
+          "yield_index": 0.9280254981727183,
+          "temporal_gap_days": 4.125,
+          "toxicity_pre_cellulose": 0.09362814190025462,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.3,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.275,
+        "robust_score": 0.4606400144398187,
+        "fragility_index": 0.22583333333333333,
+        "base_candidate": {
+          "color_L": 21.9630430489905,
+          "strength_g_tex": 29.377969398422255,
+          "yield_index": 0.9371991392341225,
+          "temporal_gap_days": 5.5,
+          "toxicity_pre_cellulose": 0.06846486214900266,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.0,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.6,
+          "late_retention_factor": 0.85
+        }
+      }
+    ],
+    "holdout": [
+      {
+        "name": "holdout_ultra_noise_gate",
+        "description": "Unseen: stricter darkness/toxicity gate + heavier timing/process noise",
+        "top_success_rate": 0.10714285714285714,
+        "top_robust_score": 0.34184100834359726,
+        "mean_success_rate": 0.08333333333333333,
+        "min_success_rate": 0.06428571428571428
+      },
+      {
+        "name": "holdout_dark_yield_clamp",
+        "description": "Unseen: deeper-black + higher strength/yield under elevated uncertainty",
+        "top_success_rate": 0.09285714285714286,
+        "top_robust_score": 0.332096332348802,
+        "mean_success_rate": 0.08333333333333333,
+        "min_success_rate": 0.07142857142857142
+      }
+    ],
+    "holdout_min_top_success_rate": 0.09285714285714286,
+    "holdout_mean_top_success_rate": 0.1,
+    "construct_transit_status": {
+      "enabled": false,
+      "fused": false,
+      "gene_names": [
+        "melA",
+        "TYRP1",
+        "DCT"
+      ],
+      "gene_lengths": [
+        921,
+        1614,
+        1560
+      ],
+      "error": ""
+    }
+  },
+  {
+    "variant_id": "transit_only",
+    "label": "Transit Only",
+    "switches": {
+      "traffic": false,
+      "storage": false,
+      "transit": true
+    },
+    "strict_pool_size": 1296,
+    "strict_seed_candidates": 120,
+    "strict_top_success_rate": 0.3,
+    "strict_top_robust_score": 0.4776018445375769,
+    "strict_top_fragility": 0.21625,
+    "strict_top_candidate": {
+      "color_L": 20.814496589324953,
+      "strength_g_tex": 29.32127147685148,
+      "yield_index": 0.931332966169178,
+      "temporal_gap_days": 4.625,
+      "toxicity_pre_cellulose": 0.08590019012479308,
+      "mat_activation_dpa": 42.0,
+      "scw_activation_dpa": 35.0,
+      "mat_strength": 1.1,
+      "scw_strength": 1.0,
+      "k_competition": 0.03,
+      "melanin_efficiency": 1.7,
+      "late_retention_factor": 0.85
+    },
+    "strict_top3": [
+      {
+        "success_rate": 0.3,
+        "robust_score": 0.4776018445375769,
+        "fragility_index": 0.21625,
+        "base_candidate": {
+          "color_L": 20.814496589324953,
+          "strength_g_tex": 29.32127147685148,
+          "yield_index": 0.931332966169178,
+          "temporal_gap_days": 4.625,
+          "toxicity_pre_cellulose": 0.08590019012479308,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.1,
+          "scw_strength": 1.0,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.25,
+        "robust_score": 0.4432489031724408,
+        "fragility_index": 0.22791666666666668,
+        "base_candidate": {
+          "color_L": 21.9630430489905,
+          "strength_g_tex": 29.3272947225378,
+          "yield_index": 0.9336628806129242,
+          "temporal_gap_days": 5.5,
+          "toxicity_pre_cellulose": 0.06846486214900266,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.0,
+          "k_competition": 0.07,
+          "melanin_efficiency": 1.6,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.25,
+        "robust_score": 0.44241619751030903,
+        "fragility_index": 0.23583333333333334,
+        "base_candidate": {
+          "color_L": 21.336484434873228,
+          "strength_g_tex": 29.352032608963277,
+          "yield_index": 0.934367532052867,
+          "temporal_gap_days": 5.375,
+          "toxicity_pre_cellulose": 0.07834915555147963,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 34.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.0,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      }
+    ],
+    "holdout": [
+      {
+        "name": "holdout_ultra_noise_gate",
+        "description": "Unseen: stricter darkness/toxicity gate + heavier timing/process noise",
+        "top_success_rate": 0.08571428571428572,
+        "top_robust_score": 0.3292946312893126,
+        "mean_success_rate": 0.07142857142857142,
+        "min_success_rate": 0.05714285714285714
+      },
+      {
+        "name": "holdout_dark_yield_clamp",
+        "description": "Unseen: deeper-black + higher strength/yield under elevated uncertainty",
+        "top_success_rate": 0.12857142857142856,
+        "top_robust_score": 0.35744782149166004,
+        "mean_success_rate": 0.09047619047619047,
+        "min_success_rate": 0.07142857142857142
+      }
+    ],
+    "holdout_min_top_success_rate": 0.08571428571428572,
+    "holdout_mean_top_success_rate": 0.10714285714285714,
+    "construct_transit_status": {
+      "enabled": true,
+      "fused": true,
+      "gene_names": [
+        "melA_vTP",
+        "TYRP1_vTP",
+        "DCT_vTP"
+      ],
+      "gene_lengths": [
+        1005,
+        1695,
+        1638
+      ],
+      "error": ""
+    }
+  },
+  {
+    "variant_id": "traffic_only",
+    "label": "Traffic Only",
+    "switches": {
+      "traffic": true,
+      "storage": false,
+      "transit": false
+    },
+    "strict_pool_size": 1296,
+    "strict_seed_candidates": 120,
+    "strict_top_success_rate": 0.2916666666666667,
+    "strict_top_robust_score": 0.472945928007244,
+    "strict_top_fragility": 0.22291666666666665,
+    "strict_top_candidate": {
+      "color_L": 20.75685092552648,
+      "strength_g_tex": 29.315868199840338,
+      "yield_index": 0.9308221726893045,
+      "temporal_gap_days": 4.625,
+      "toxicity_pre_cellulose": 0.08707320802180864,
+      "mat_activation_dpa": 42.0,
+      "scw_activation_dpa": 35.0,
+      "mat_strength": 1.3,
+      "scw_strength": 1.2,
+      "k_competition": 0.03,
+      "melanin_efficiency": 1.7,
+      "late_retention_factor": 0.85
+    },
+    "strict_top3": [
+      {
+        "success_rate": 0.2916666666666667,
+        "robust_score": 0.472945928007244,
+        "fragility_index": 0.22291666666666665,
+        "base_candidate": {
+          "color_L": 20.75685092552648,
+          "strength_g_tex": 29.315868199840338,
+          "yield_index": 0.9308221726893045,
+          "temporal_gap_days": 4.625,
+          "toxicity_pre_cellulose": 0.08707320802180864,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.2,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.275,
+        "robust_score": 0.46103661376264693,
+        "fragility_index": 0.22749999999999998,
+        "base_candidate": {
+          "color_L": 21.9630430489905,
+          "strength_g_tex": 29.3272947225378,
+          "yield_index": 0.9336628806129242,
+          "temporal_gap_days": 5.5,
+          "toxicity_pre_cellulose": 0.06846486214900266,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.0,
+          "k_competition": 0.07,
+          "melanin_efficiency": 1.6,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.25833333333333336,
+        "robust_score": 0.4498599664308428,
+        "fragility_index": 0.22916666666666663,
+        "base_candidate": {
+          "color_L": 20.814496589324953,
+          "strength_g_tex": 29.32127147685148,
+          "yield_index": 0.931332966169178,
+          "temporal_gap_days": 4.625,
+          "toxicity_pre_cellulose": 0.08590019012479308,
+          "mat_activation_dpa": 42.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.1,
+          "scw_strength": 1.0,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      }
+    ],
+    "holdout": [
+      {
+        "name": "holdout_ultra_noise_gate",
+        "description": "Unseen: stricter darkness/toxicity gate + heavier timing/process noise",
+        "top_success_rate": 0.12857142857142856,
+        "top_robust_score": 0.35881956096318274,
+        "mean_success_rate": 0.10952380952380952,
+        "min_success_rate": 0.09285714285714286
+      },
+      {
+        "name": "holdout_dark_yield_clamp",
+        "description": "Unseen: deeper-black + higher strength/yield under elevated uncertainty",
+        "top_success_rate": 0.11428571428571428,
+        "top_robust_score": 0.347476826654112,
+        "mean_success_rate": 0.07380952380952381,
+        "min_success_rate": 0.04285714285714286
+      }
+    ],
+    "holdout_min_top_success_rate": 0.11428571428571428,
+    "holdout_mean_top_success_rate": 0.12142857142857141,
+    "construct_transit_status": {
+      "enabled": false,
+      "fused": false,
+      "gene_names": [
+        "melA",
+        "TYRP1",
+        "DCT"
+      ],
+      "gene_lengths": [
+        921,
+        1614,
+        1560
+      ],
+      "error": ""
+    }
+  },
+  {
+    "variant_id": "storage_only",
+    "label": "Storage Only (Transit+Compartment)",
+    "switches": {
+      "traffic": false,
+      "storage": true,
+      "transit": true
+    },
+    "strict_pool_size": 3699,
+    "strict_seed_candidates": 120,
+    "strict_top_success_rate": 0.7666666666666667,
+    "strict_top_robust_score": 0.8051661467131266,
+    "strict_top_fragility": 0.0725,
+    "strict_top_candidate": {
+      "color_L": 18.142597447329038,
+      "strength_g_tex": 28.92265536603809,
+      "yield_index": 0.8973037031040724,
+      "temporal_gap_days": 0.75,
+      "toxicity_pre_cellulose": 0.01613015802035312,
+      "mat_activation_dpa": 38.0,
+      "scw_activation_dpa": 33.0,
+      "mat_strength": 1.3,
+      "scw_strength": 1.3,
+      "k_competition": 0.07,
+      "melanin_efficiency": 1.7,
+      "late_retention_factor": 0.85
+    },
+    "strict_top3": [
+      {
+        "success_rate": 0.7666666666666667,
+        "robust_score": 0.8051661467131266,
+        "fragility_index": 0.0725,
+        "base_candidate": {
+          "color_L": 18.142597447329038,
+          "strength_g_tex": 28.92265536603809,
+          "yield_index": 0.8973037031040724,
+          "temporal_gap_days": 0.75,
+          "toxicity_pre_cellulose": 0.01613015802035312,
+          "mat_activation_dpa": 38.0,
+          "scw_activation_dpa": 33.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.3,
+          "k_competition": 0.07,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.7333333333333333,
+        "robust_score": 0.7830275663737224,
+        "fragility_index": 0.08,
+        "base_candidate": {
+          "color_L": 19.615865412516456,
+          "strength_g_tex": 29.203376651202046,
+          "yield_index": 0.9203036855621283,
+          "temporal_gap_days": 2.875,
+          "toxicity_pre_cellulose": 0.011816099035246923,
+          "mat_activation_dpa": 40.0,
+          "scw_activation_dpa": 34.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.2,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.725,
+        "robust_score": 0.7771632061281787,
+        "fragility_index": 0.08208333333333334,
+        "base_candidate": {
+          "color_L": 19.678634027405863,
+          "strength_g_tex": 29.20938683715238,
+          "yield_index": 0.9208631759892424,
+          "temporal_gap_days": 2.875,
+          "toxicity_pre_cellulose": 0.011665216807133455,
+          "mat_activation_dpa": 40.0,
+          "scw_activation_dpa": 34.0,
+          "mat_strength": 1.1,
+          "scw_strength": 1.0,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      }
+    ],
+    "holdout": [
+      {
+        "name": "holdout_ultra_noise_gate",
+        "description": "Unseen: stricter darkness/toxicity gate + heavier timing/process noise",
+        "top_success_rate": 0.4857142857142857,
+        "top_robust_score": 0.6089786002261264,
+        "mean_success_rate": 0.469047619047619,
+        "min_success_rate": 0.44285714285714284
+      },
+      {
+        "name": "holdout_dark_yield_clamp",
+        "description": "Unseen: deeper-black + higher strength/yield under elevated uncertainty",
+        "top_success_rate": 0.4642857142857143,
+        "top_robust_score": 0.5947372846038689,
+        "mean_success_rate": 0.44761904761904764,
+        "min_success_rate": 0.4142857142857143
+      }
+    ],
+    "holdout_min_top_success_rate": 0.4642857142857143,
+    "holdout_mean_top_success_rate": 0.475,
+    "construct_transit_status": {
+      "enabled": true,
+      "fused": true,
+      "gene_names": [
+        "melA_vTP",
+        "TYRP1_vTP",
+        "DCT_vTP"
+      ],
+      "gene_lengths": [
+        1005,
+        1695,
+        1638
+      ],
+      "error": ""
+    }
+  },
+  {
+    "variant_id": "all_on",
+    "label": "All On",
+    "switches": {
+      "traffic": true,
+      "storage": true,
+      "transit": true
+    },
+    "strict_pool_size": 3699,
+    "strict_seed_candidates": 120,
+    "strict_top_success_rate": 0.7666666666666667,
+    "strict_top_robust_score": 0.8058446239347897,
+    "strict_top_fragility": 0.07,
+    "strict_top_candidate": {
+      "color_L": 18.798109067083075,
+      "strength_g_tex": 29.138148253838253,
+      "yield_index": 0.9141664302454239,
+      "temporal_gap_days": 1.75,
+      "toxicity_pre_cellulose": 0.01360825287816442,
+      "mat_activation_dpa": 38.0,
+      "scw_activation_dpa": 35.0,
+      "mat_strength": 1.1,
+      "scw_strength": 1.0,
+      "k_competition": 0.03,
+      "melanin_efficiency": 1.7,
+      "late_retention_factor": 0.85
+    },
+    "strict_top3": [
+      {
+        "success_rate": 0.7666666666666667,
+        "robust_score": 0.8058446239347897,
+        "fragility_index": 0.07,
+        "base_candidate": {
+          "color_L": 18.798109067083075,
+          "strength_g_tex": 29.138148253838253,
+          "yield_index": 0.9141664302454239,
+          "temporal_gap_days": 1.75,
+          "toxicity_pre_cellulose": 0.01360825287816442,
+          "mat_activation_dpa": 38.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.1,
+          "scw_strength": 1.0,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.7416666666666667,
+        "robust_score": 0.7888123957776321,
+        "fragility_index": 0.07708333333333334,
+        "base_candidate": {
+          "color_L": 19.213366280512837,
+          "strength_g_tex": 29.09880887258197,
+          "yield_index": 0.912519413396395,
+          "temporal_gap_days": 2.375,
+          "toxicity_pre_cellulose": 0.012443559211919942,
+          "mat_activation_dpa": 39.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.2,
+          "k_competition": 0.07,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      },
+      {
+        "success_rate": 0.7166666666666667,
+        "robust_score": 0.7707487539901982,
+        "fragility_index": 0.08458333333333334,
+        "base_candidate": {
+          "color_L": 19.213366280512837,
+          "strength_g_tex": 29.184473143235312,
+          "yield_index": 0.9184120935997714,
+          "temporal_gap_days": 2.375,
+          "toxicity_pre_cellulose": 0.012443559211919942,
+          "mat_activation_dpa": 39.0,
+          "scw_activation_dpa": 35.0,
+          "mat_strength": 1.3,
+          "scw_strength": 1.2,
+          "k_competition": 0.03,
+          "melanin_efficiency": 1.7,
+          "late_retention_factor": 0.85
+        }
+      }
+    ],
+    "holdout": [
+      {
+        "name": "holdout_ultra_noise_gate",
+        "description": "Unseen: stricter darkness/toxicity gate + heavier timing/process noise",
+        "top_success_rate": 0.5071428571428571,
+        "top_robust_score": 0.6239672574137669,
+        "mean_success_rate": 0.4976190476190476,
+        "min_success_rate": 0.4857142857142857
+      },
+      {
+        "name": "holdout_dark_yield_clamp",
+        "description": "Unseen: deeper-black + higher strength/yield under elevated uncertainty",
+        "top_success_rate": 0.5285714285714286,
+        "top_robust_score": 0.6396628144768498,
+        "mean_success_rate": 0.5214285714285715,
+        "min_success_rate": 0.5142857142857142
+      }
+    ],
+    "holdout_min_top_success_rate": 0.5071428571428571,
+    "holdout_mean_top_success_rate": 0.5178571428571428,
+    "construct_transit_status": {
+      "enabled": true,
+      "fused": true,
+      "gene_names": [
+        "melA_vTP",
+        "TYRP1_vTP",
+        "DCT_vTP"
+      ],
+      "gene_lengths": [
+        1005,
+        1695,
+        1638
+      ],
+      "error": ""
+    }
+  }
+]

@@ -22,6 +22,7 @@ from typing import Any
 import yaml
 
 from src.adversarial_robustness_suite import scale_noise, strict_thresholds
+from src.config_loader import resolve_config_path
 from src.expression_model import run_simulation
 from src.robustness_analyzer import DEFAULT_NOISE, DEFAULT_THRESHOLDS, run_robustness_analysis
 from src.tradeoff_optimizer import (
@@ -308,7 +309,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Compare baseline vs calibrated parameter configs.")
     parser.add_argument(
         "--baseline-config",
-        default=str(CONFIG_DIR / "parameters.yaml"),
+        default=str(resolve_config_path()),
         help="Baseline YAML config path.",
     )
     parser.add_argument(

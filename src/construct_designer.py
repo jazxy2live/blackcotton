@@ -21,6 +21,8 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional
 
+from src.config_loader import load_config
+
 # ── Configuration ──────────────────────────────────────────────────────────
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -251,7 +253,12 @@ class TDNAConstruct:
                     'name': c.name,
                     'length_bp': c.length,
                     'promoter': {'name': c.promoter.name, 'length': c.promoter.length},
-                    'gene': {'name': c.gene.name, 'length': c.gene.length},
+                    'gene': {
+                        'name': c.gene.name,
+                        'length': c.gene.length,
+                        'transit_peptide_fused': bool("_vTP" in c.gene.name),
+                        'description': c.gene.description,
+                    },
                     'terminator': {'name': c.terminator.name, 'length': c.terminator.length},
                     'description': c.description
                 }
@@ -273,6 +280,11 @@ def read_fasta(filepath: str) -> str:
                 continue
             sequence_lines.append(line)
     return ''.join(sequence_lines).upper().replace(' ', '')
+
+
+def load_params() -> dict:
+    """Load active project parameters for construct-level options."""
+    return load_config()
 
 
 def read_genbank_sequence(filepath: str) -> str:
@@ -325,6 +337,109 @@ def is_valid_cds(sequence: str, start_codons: set[str]) -> bool:
         if seq[i:i+3] in STOP_CODONS:
             return False
     return True
+
+
+def prepare_transit_peptide(sequence: str, peptide_name: str) -> str:
+    """
+    Validate and normalize a transit peptide coding sequence for N-terminal fusion.
+
+    Rules:
+      - DNA only, frame-aligned length.
+      - Must start with ATG.
+      - No internal stop codons.
+      - Terminal stop codon is removed automatically (if present).
+    """
+    seq = clean_dna(sequence)
+    if len(seq) < 9 or len(seq) % 3 != 0:
+        raise ValueError(f"Transit peptide {peptide_name} must be >=9 bp and divisible by 3.")
+    if seq[:3] != "ATG":
+        raise ValueError(f"Transit peptide {peptide_name} must start with ATG.")
+
+    for i in range(0, len(seq) - 3, 3):
+        codon = seq[i:i+3]
+        if codon in STOP_CODONS:
+            raise ValueError(f"Transit peptide {peptide_name} has an internal stop codon at {i+1}.")
+
+    if seq[-3:] in STOP_CODONS:
+        seq = seq[:-3]
+
+    if len(seq) < 9 or len(seq) % 3 != 0:
+        raise ValueError(f"Transit peptide {peptide_name} became invalid after stop-codon trimming.")
+    return seq
+
+
+def fuse_transit_peptide(gene: GeneticElement, transit_dna: str, transit_name: str) -> GeneticElement:
+    """
+    Fuse N-terminal transit peptide CDS to a gene CDS in frame.
+
+    The peptide start codon is kept; the native gene start codon is removed.
+    The gene terminal stop codon is retained.
+    """
+    cds = clean_dna(gene.sequence)
+    if len(cds) < 6 or len(cds) % 3 != 0:
+        raise ValueError(f"Gene {gene.name} CDS must be frame-aligned before transit fusion.")
+    if cds[-3:] not in STOP_CODONS:
+        raise ValueError(f"Gene {gene.name} CDS must have a terminal stop codon before transit fusion.")
+
+    fused = transit_dna + cds[3:]
+    if len(fused) % 3 != 0:
+        raise ValueError(f"Fused sequence for {gene.name} is out-of-frame.")
+    if fused[:3] != "ATG":
+        raise ValueError(f"Fused sequence for {gene.name} must start with ATG.")
+    if fused[-3:] not in STOP_CODONS:
+        raise ValueError(f"Fused sequence for {gene.name} must end with a stop codon.")
+    for i in range(3, len(fused) - 3, 3):
+        if fused[i:i+3] in STOP_CODONS:
+            raise ValueError(f"Fused sequence for {gene.name} has an internal stop codon at {i+1}.")
+
+    return GeneticElement(
+        name=f"{gene.name}_vTP",
+        element_type=gene.element_type,
+        sequence=fused,
+        description=f"{gene.description} | N-terminal vacuolar transit peptide fusion ({transit_name})",
+    )
+
+
+def maybe_apply_transit_peptides(
+    params: dict,
+    melA: GeneticElement,
+    tyrp1: GeneticElement,
+    dct: GeneticElement,
+) -> tuple[GeneticElement, GeneticElement, GeneticElement]:
+    """Apply configured transit peptide fusions to melA/TYRP1/DCT when enabled."""
+    construct_cfg = params.get("construct", {})
+    if not bool(construct_cfg.get("use_vacuolar_transit_peptides", False)):
+        return melA, tyrp1, dct
+
+    transit_map = construct_cfg.get("transit_peptides", {})
+    if not isinstance(transit_map, dict):
+        raise ValueError("construct.transit_peptides must be a mapping in the active config")
+
+    gene_plan = [
+        ("melA", melA),
+        ("TYRP1", tyrp1),
+        ("DCT", dct),
+    ]
+    fused_genes = []
+    print("\nApplying vacuolar transit peptide fusions...")
+    for gene_name, gene in gene_plan:
+        fasta_name = transit_map.get(gene_name)
+        if not fasta_name:
+            raise ValueError(f"Missing construct.transit_peptides.{gene_name} in the active config")
+        fasta_path = SEQ_DIR / str(fasta_name)
+        if not fasta_path.exists():
+            raise FileNotFoundError(f"Transit peptide FASTA missing for {gene_name}: {fasta_path}")
+
+        transit_raw = read_fasta(str(fasta_path))
+        transit_clean = prepare_transit_peptide(transit_raw, gene_name)
+        fused = fuse_transit_peptide(gene, transit_clean, fasta_path.name)
+        fused_genes.append(fused)
+        print(
+            f"  ✓ {gene_name}: transit {fasta_path.name} ({len(transit_clean)} bp) "
+            f"+ mature CDS ({len(gene.sequence) - 3} bp) -> {len(fused.sequence)} bp"
+        )
+
+    return tuple(fused_genes)
 
 
 def find_best_orf(
@@ -503,7 +618,8 @@ NPTII_SEQUENCE = (
 
 def build_construct() -> TDNAConstruct:
     """Assemble the complete T-DNA construct for black cotton."""
-    
+    params = load_params()
+
     print("\n🧬 BlackCotton Construct Designer")
     print("=" * 50)
     print("Loading genetic elements...\n")
@@ -570,6 +686,10 @@ def build_construct() -> TDNAConstruct:
         description="Dopachrome tautomerase CDS (NCBI NM_001922, H. sapiens)"
     )
     print(f"  ✓ Loaded {dct.name}: {dct.length} bp (source: {dct_source})")
+
+    melA, tyrp1, dct = maybe_apply_transit_peptides(params, melA, tyrp1, dct)
+    if any(g.name.endswith("_vTP") for g in (melA, tyrp1, dct)):
+        print("  ✓ Transit peptide compartmentalization enabled for melA/TYRP1/DCT")
     
     nptII = GeneticElement(
         name="nptII",

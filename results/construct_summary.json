@@ -1,19 +1,21 @@
 {
   "name": "pBC-MelaninCotton-v2",
-  "total_length_bp": 8194,
-  "gc_content": 0.4635098852819136,
+  "total_length_bp": 8437,
+  "gc_content": 0.46616095768638144,
   "num_cassettes": 4,
   "cassettes": [
     {
       "name": "Melanin Primary (melA)",
-      "length_bp": 1832,
+      "length_bp": 1916,
       "promoter": {
         "name": "pGhMat1",
         "length": 658
       },
       "gene": {
-        "name": "melA",
-        "length": 921
+        "name": "melA_vTP",
+        "length": 1005,
+        "transit_peptide_fused": true,
+        "description": "Tyrosinase CDS from S. antibioticus (NCBI M11582). Tyr \u2192 DOPA \u2192 Dopaquinone | N-terminal vacuolar transit peptide fusion (melA_vacuolar_transit_peptide.fasta)"
       },
       "terminator": {
         "name": "tNOS",
@@ -23,14 +25,16 @@
     },
     {
       "name": "TYRP1 Support",
-      "length_bp": 2416,
+      "length_bp": 2497,
       "promoter": {
         "name": "pGhSCW-late",
         "length": 549
       },
       "gene": {
-        "name": "TYRP1",
-        "length": 1614
+        "name": "TYRP1_vTP",
+        "length": 1695,
+        "transit_peptide_fused": true,
+        "description": "Tyrosinase-related protein 1 CDS (NCBI NM_000550, H. sapiens) | N-terminal vacuolar transit peptide fusion (TYRP1_vacuolar_transit_peptide.fasta)"
       },
       "terminator": {
         "name": "tNOS",
@@ -40,14 +44,16 @@
     },
     {
       "name": "DCT Support",
-      "length_bp": 2362,
+      "length_bp": 2440,
       "promoter": {
         "name": "pGhSCW-late",
         "length": 549
       },
       "gene": {
-        "name": "DCT",
-        "length": 1560
+        "name": "DCT_vTP",
+        "length": 1638,
+        "transit_peptide_fused": true,
+        "description": "Dopachrome tautomerase CDS (NCBI NM_001922, H. sapiens) | N-terminal vacuolar transit peptide fusion (DCT_vacuolar_transit_peptide.fasta)"
       },
       "terminator": {
         "name": "tNOS",
@@ -64,7 +70,9 @@
       },
       "gene": {
         "name": "nptII",
-        "length": 795
+        "length": 795,
+        "transit_peptide_fused": false,
+        "description": "Neomycin phosphotransferase II (Kanamycin resistance)"
       },
       "terminator": {
         "name": "tNOS",
@@ -89,87 +97,87 @@
       "strand": "+"
     },
     {
-      "name": "melA",
+      "name": "melA_vTP",
       "type": "CDS",
       "start": 683,
-      "end": 1604,
+      "end": 1688,
       "strand": "+"
     },
     {
       "name": "tNOS",
       "type": "terminator",
-      "start": 1604,
-      "end": 1857,
+      "start": 1688,
+      "end": 1941,
       "strand": "+"
     },
     {
       "name": "pGhSCW-late",
       "type": "promoter",
-      "start": 1857,
-      "end": 2406,
+      "start": 1941,
+      "end": 2490,
       "strand": "+"
     },
     {
-      "name": "TYRP1",
+      "name": "TYRP1_vTP",
       "type": "CDS",
-      "start": 2406,
-      "end": 4020,
+      "start": 2490,
+      "end": 4185,
       "strand": "+"
     },
     {
       "name": "tNOS",
       "type": "terminator",
-      "start": 4020,
-      "end": 4273,
+      "start": 4185,
+      "end": 4438,
       "strand": "+"
     },
     {
       "name": "pGhSCW-late",
       "type": "promoter",
-      "start": 4273,
-      "end": 4822,
+      "start": 4438,
+      "end": 4987,
       "strand": "+"
     },
     {
-      "name": "DCT",
+      "name": "DCT_vTP",
       "type": "CDS",
-      "start": 4822,
-      "end": 6382,
+      "start": 4987,
+      "end": 6625,
       "strand": "+"
     },
     {
       "name": "tNOS",
       "type": "terminator",
-      "start": 6382,
-      "end": 6635,
+      "start": 6625,
+      "end": 6878,
       "strand": "+"
     },
     {
       "name": "p35S",
       "type": "promoter",
-      "start": 6635,
-      "end": 7121,
+      "start": 6878,
+      "end": 7364,
       "strand": "+"
     },
     {
       "name": "nptII",
       "type": "CDS",
-      "start": 7121,
-      "end": 7916,
+      "start": 7364,
+      "end": 8159,
       "strand": "+"
     },
     {
       "name": "tNOS",
       "type": "terminator",
-      "start": 7916,
-      "end": 8169,
+      "start": 8159,
+      "end": 8412,
       "strand": "+"
     },
     {
       "name": "RB",
       "type": "T-DNA_border",
-      "start": 8169,
-      "end": 8194,
+      "start": 8412,
+      "end": 8437,
       "strand": "+"
     }
   ]

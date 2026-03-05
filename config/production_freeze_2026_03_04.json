@@ -1,0 +1,22 @@
+{
+  "freeze_id": "blackcotton-prod-freeze-2026-03-04",
+  "frozen_at_utc": "2026-03-04T09:25:20Z",
+  "production_config_path": "config/parameters_production.yaml",
+  "production_config_sha256": "d8906c15b5898475096ce7c7be5323c0bfdb18fd02dbda0117ea53d070322e3e",
+  "selection_basis": {
+    "audit_run": "results/anti_gibberish_audit_hiconf_2026_03_04_summary.json",
+    "report": "results/anti_gibberish_audit_hiconf_2026_03_04_report.md",
+    "selected_variant": "all_on",
+    "strict_top_success_rate": 0.709,
+    "holdout_worst_top_success_rate": 0.483,
+    "confidence_rating": "HIGH"
+  },
+  "policy": {
+    "default_loader_priority": [
+      "BLACKCOTTON_CONFIG_PATH (override)",
+      "config/parameters_production.yaml",
+      "config/parameters.yaml (fallback)"
+    ],
+    "large_simulation_1000_plus_trials": "SKIPPED_BY_USER_REQUEST"
+  }
+}

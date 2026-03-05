@@ -19,9 +19,10 @@ The key question this answers:
 
 import numpy as np
 from scipy.integrate import solve_ivp
-import yaml
 import json
 from pathlib import Path
+
+from src.config_loader import load_config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = BASE_DIR / "config"
@@ -30,8 +31,7 @@ RESULTS_DIR = BASE_DIR / "results"
 
 def load_params() -> dict:
     """Load biological parameters from YAML config."""
-    with open(CONFIG_DIR / "parameters.yaml") as f:
-        return yaml.safe_load(f)
+    return load_config()
 
 
 def promoter_activity(t_dpa: float, activation_dpa: float, peak_dpa: float,

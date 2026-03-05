@@ -31,6 +31,7 @@ from src.adversarial_robustness_suite import (
     normalize_top_candidate_rows,
     scenario_configs,
 )
+from src.config_loader import resolve_config_path
 from src.robustness_analyzer import run_robustness_analysis
 from src.tradeoff_optimizer import evaluate_candidate_proxy, load_params
 
@@ -427,7 +428,7 @@ def write_report(
 
 
 def load_params_from_path(config_path: Path) -> dict[str, Any]:
-    default_path = BASE_DIR / "config" / "parameters.yaml"
+    default_path = resolve_config_path()
     if config_path.resolve() == default_path.resolve():
         return load_params()
     with open(config_path) as f:
@@ -581,7 +582,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run strict-high-noise hardening sprint.")
     parser.add_argument(
         "--config-path",
-        default=str(BASE_DIR / "config" / "parameters.yaml"),
+        default=str(resolve_config_path()),
         help="Path to YAML parameter config.",
     )
     parser.add_argument("--n-trials", type=int, default=220, help="Monte Carlo trials per candidate.")

@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "baseline",
+    "description": "Current production thresholds and uncertainty model.",
+    "top_candidate_input_rank": 3,
+    "top_success_rate": 1.0,
+    "top_robust_score": 0.9692890941821988
+  },
+  {
+    "scenario": "strict_gate",
+    "description": "Stricter pass/fail gates, same uncertainty model.",
+    "top_candidate_input_rank": 2,
+    "top_success_rate": 0.9045454545454545,
+    "top_robust_score": 0.9031916012297511
+  },
+  {
+    "scenario": "high_noise",
+    "description": "Current gates with heavier biological/process uncertainty.",
+    "top_candidate_input_rank": 3,
+    "top_success_rate": 0.8818181818181818,
+    "top_robust_score": 0.8852906402354368
+  },
+  {
+    "scenario": "strict_high_noise",
+    "description": "Strict gates plus heavy uncertainty (worst-case in-silico).",
+    "top_candidate_input_rank": 2,
+    "top_success_rate": 0.7045454545454546,
+    "top_robust_score": 0.7623038034213223
+  }
+]

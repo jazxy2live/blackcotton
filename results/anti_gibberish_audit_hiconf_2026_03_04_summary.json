@@ -1,0 +1,105 @@
+{
+  "generated_at": "2026-03-04T09:14:45+00:00",
+  "out_prefix": "anti_gibberish_audit_hiconf_2026_03_04",
+  "n_variants": 5,
+  "variants": [
+    "all_off",
+    "transit_only",
+    "traffic_only",
+    "storage_only",
+    "all_on"
+  ],
+  "strict_scenario": {
+    "name": "strict_high_noise",
+    "thresholds": {
+      "max_color_L": 22.0,
+      "min_strength_g_tex": 28.5,
+      "min_yield_index": 0.88,
+      "min_temporal_gap_days": 0.5,
+      "max_toxicity_pre_cellulose": 0.08
+    },
+    "noise": {
+      "timing_sigma_dpa": 1.35,
+      "strength_cv": 0.14400000000000002,
+      "competition_cv": 0.216,
+      "efficiency_cv": 0.18000000000000002,
+      "retention_sigma": 0.09000000000000001,
+      "hill_cv": 0.14400000000000002,
+      "leakage_cv": 0.216,
+      "copper_sigma": 0.07200000000000001,
+      "activation_sigma": 0.09000000000000001,
+      "ros_cv": 0.18000000000000002,
+      "silencing_sigma": 0.054,
+      "event_cv_sigma": 0.07200000000000001
+    }
+  },
+  "holdout_scenarios": [
+    {
+      "name": "holdout_ultra_noise_gate",
+      "description": "Unseen: stricter darkness/toxicity gate + heavier timing/process noise",
+      "thresholds": {
+        "max_color_L": 21.5,
+        "min_strength_g_tex": 28.5,
+        "min_yield_index": 0.88,
+        "min_temporal_gap_days": 0.75,
+        "max_toxicity_pre_cellulose": 0.075
+      },
+      "noise": {
+        "timing_sigma_dpa": 1.6500000000000001,
+        "strength_cv": 0.17600000000000002,
+        "competition_cv": 0.264,
+        "efficiency_cv": 0.22000000000000003,
+        "retention_sigma": 0.11000000000000001,
+        "hill_cv": 0.17600000000000002,
+        "leakage_cv": 0.264,
+        "copper_sigma": 0.08800000000000001,
+        "activation_sigma": 0.11000000000000001,
+        "ros_cv": 0.22000000000000003,
+        "silencing_sigma": 0.066,
+        "event_cv_sigma": 0.08800000000000001
+      }
+    },
+    {
+      "name": "holdout_dark_yield_clamp",
+      "description": "Unseen: deeper-black + higher strength/yield under elevated uncertainty",
+      "thresholds": {
+        "max_color_L": 21.0,
+        "min_strength_g_tex": 28.6,
+        "min_yield_index": 0.89,
+        "min_temporal_gap_days": 0.75,
+        "max_toxicity_pre_cellulose": 0.08
+      },
+      "noise": {
+        "timing_sigma_dpa": 1.4249999999999998,
+        "strength_cv": 0.152,
+        "competition_cv": 0.288,
+        "efficiency_cv": 0.24,
+        "retention_sigma": 0.095,
+        "hill_cv": 0.152,
+        "leakage_cv": 0.22799999999999998,
+        "copper_sigma": 0.076,
+        "activation_sigma": 0.095,
+        "ros_cv": 0.19,
+        "silencing_sigma": 0.056999999999999995,
+        "event_cv_sigma": 0.076
+      }
+    }
+  ],
+  "confidence": {
+    "rating": "HIGH",
+    "strict_success_gain_all_on_vs_control": 0.44375,
+    "holdout_worst_top_success_gain_all_on_vs_control": 0.3833333333333333,
+    "marginal_gain_traffic_only_vs_control": 0.009375000000000022,
+    "marginal_gain_storage_only_vs_transit_only": 0.45625,
+    "marginal_gain_transit_only_vs_control": -0.01874999999999999,
+    "strong_points": [
+      "Combined upgrades improve strict-high-noise top success by +0.444 versus control.",
+      "Combined upgrades improve worst holdout top success by +0.383 versus control.",
+      "Traffic tuning alone contributes positive gain (+0.009).",
+      "Storage targeting (with transit) contributes positive gain (+0.456)."
+    ],
+    "caveats": [
+      "Transit-only change has near-zero direct robustness impact unless paired with compartment/toxicity assumptions."
+    ]
+  }
+}

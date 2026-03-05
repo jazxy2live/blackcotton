@@ -29,9 +29,10 @@ first-order kinetics for spontaneous reactions.
 
 import numpy as np
 from scipy.integrate import solve_ivp
-import yaml
 import json
 from pathlib import Path
+
+from src.config_loader import load_config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = BASE_DIR / "config"
@@ -39,8 +40,7 @@ RESULTS_DIR = BASE_DIR / "results"
 
 
 def load_params() -> dict:
-    with open(CONFIG_DIR / "parameters.yaml") as f:
-        return yaml.safe_load(f)
+    return load_config()
 
 
 def michaelis_menten(substrate: float, Vmax: float, Km: float) -> float:
@@ -86,8 +86,16 @@ def melanin_odes(t, y, enzyme_levels, params):
     event_cv = float(np.clip(risk.get("event_expression_cv", 0.0), 0.0, 0.80))
     ros_capacity = float(np.clip(risk.get("ros_buffer_capacity", 1.0), 0.0, 1.5))
 
+    tc = mp.get("traffic_control", {})
+    melA_entry_scale = float(np.clip(tc.get("melA_entry_scale", 1.0), 0.05, 2.0))
+    dopaquinone_drain_scale = float(np.clip(tc.get("dopaquinone_drain_scale", 1.0), 0.20, 3.0))
+    dopachrome_drain_scale = float(np.clip(tc.get("dopachrome_drain_scale", 1.0), 0.20, 3.0))
+    dct_flux_scale = float(np.clip(tc.get("dct_flux_scale", 1.0), 0.20, 3.0))
+    tyrp1_flux_scale = float(np.clip(tc.get("tyrp1_flux_scale", 1.0), 0.20, 3.0))
+    eumelanin_push_scale = float(np.clip(tc.get("eumelanin_push_scale", 1.0), 0.20, 3.0))
+
     expression_scale = max(0.05, (1.0 - silencing_prob) * np.exp(-0.5 * (event_cv ** 2)))
-    melA_active = melA_e * copper_loading * tyrosinase_activation * expression_scale
+    melA_active = melA_e * copper_loading * tyrosinase_activation * expression_scale * melA_entry_scale
     tyrp1_active = tyrp1_e * expression_scale
     dct_active = dct_e * expression_scale
     detox_scale = float(np.clip(0.80 + 0.30 * ros_capacity, 0.60, 1.25))
@@ -101,19 +109,19 @@ def melanin_odes(t, y, enzyme_levels, params):
     v2 = melA_active * michaelis_menten(DOPA, melA_params['Vmax'] * 0.8, melA_params['Km_tyrosine'] * 0.5)
     
     # Step 3: Dopaquinone → Leucodopachrome (spontaneous cyclization)
-    v3 = mp['dopaquinone_cyclization_rate'] * DQ
+    v3 = mp['dopaquinone_cyclization_rate'] * dopaquinone_drain_scale * DQ
     
     # Step 4: Leucodopachrome → Dopachrome (spontaneous oxidation)
-    v4 = 0.3 * LDC  # Spontaneous, fast
-    
+    v4 = 0.3 * dopachrome_drain_scale * LDC  # Spontaneous oxidation + downstream pull
+
     # Step 5: Dopachrome → DHICA (DCT-catalyzed)
-    v5 = dct_active * michaelis_menten(DC, dct_params['Vmax'], dct_params['Km_dopachrome'])
-    
+    v5 = dct_active * dct_flux_scale * michaelis_menten(DC, dct_params['Vmax'], dct_params['Km_dopachrome'])
+
     # Step 6: DHICA → Indole-5,6-quinone (TYRP1-catalyzed oxidation)
-    v6 = tyrp1_active * michaelis_menten(DHICA, tyrp1_params['Vmax'], tyrp1_params['Km_dopaquinone'])
-    
+    v6 = tyrp1_active * tyrp1_flux_scale * michaelis_menten(DHICA, tyrp1_params['Vmax'], tyrp1_params['Km_dopaquinone'])
+
     # Step 7: Indole-quinone → Melanin (polymerization)
-    v7 = mp['indole_polymerization_rate'] * detox_scale * IQ
+    v7 = mp['indole_polymerization_rate'] * detox_scale * eumelanin_push_scale * IQ
     
     # ── ODEs ──────────────────────────────────────────────────────────
     

@@ -13,8 +13,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.gridspec import GridSpec
 import json
-import yaml
 from pathlib import Path
+
+from src.config_loader import load_config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = BASE_DIR / "config"
@@ -51,8 +52,7 @@ COLORS = {
 
 
 def load_params():
-    with open(CONFIG_DIR / "parameters.yaml") as f:
-        return yaml.safe_load(f)
+    return load_config()
 
 
 def plot_expression_kinetics():

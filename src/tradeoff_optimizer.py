@@ -21,8 +21,8 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import yaml
 
+from src.config_loader import load_config
 from src.expression_model import (
     cellulose_accumulation,
     promoter_activity,
@@ -52,8 +52,7 @@ DEFAULT_FAILURE_RISKS = {
 
 
 def load_params() -> dict:
-    with open(CONFIG_DIR / "parameters.yaml") as f:
-        return yaml.safe_load(f)
+    return load_config()
 
 
 def sigmoid(x: np.ndarray, midpoint: float, slope: float) -> np.ndarray:
@@ -98,6 +97,34 @@ def toxicity_threshold(params: dict[str, Any]) -> float:
     risk = failure_risk_params(params)
     # More ROS buffering increases tolerated intermediate load.
     return float(max(1e-6, risk["quinone_stress_threshold"] * (0.70 + 0.60 * risk["ros_buffer_capacity"])))
+
+
+def compartmentalization_profile(params: dict[str, Any]) -> dict[str, float]:
+    """
+    Translate compartment-targeting settings into a cytosolic toxicity scale.
+
+    A higher sequestration fraction and lower leak fraction reduce quinone burden
+    experienced by the cytosol, where pre-cellulose toxicity is most damaging.
+    """
+    mp = params.get("melanin_pathway", {})
+    comp = mp.get("compartmentalization", {})
+    construct_cfg = params.get("construct", {})
+    has_transit_targeting = bool(construct_cfg.get("use_vacuolar_transit_peptides", False))
+
+    # Transit targeting is required for sequestration assumptions to apply.
+    if has_transit_targeting:
+        sequestration = float(np.clip(comp.get("vacuolar_sequestration_fraction", 0.0), 0.0, 0.95))
+        leak = float(np.clip(comp.get("cytosolic_quinone_leak_fraction", 1.0), 0.05, 1.0))
+    else:
+        sequestration = 0.0
+        leak = 1.0
+    cytosolic_scale = float(np.clip((1.0 - sequestration) * leak, 0.02, 1.0))
+    return {
+        "use_vacuolar_transit_peptides": bool(has_transit_targeting),
+        "vacuolar_sequestration_fraction": sequestration,
+        "cytosolic_quinone_leak_fraction": leak,
+        "cytosolic_quinone_scale": cytosolic_scale,
+    }
 
 
 def effective_pigment_levels(
@@ -236,6 +263,7 @@ def evaluate_candidate_proxy(
     late_retention_factor: float,
 ) -> dict:
     effective_eff, eff_meta = effective_melanin_efficiency(params, melanin_efficiency)
+    comp_profile = compartmentalization_profile(params)
     overlap_index, pigment_load, temporal_gap_days, late_fraction_proxy = compute_proxy_signals(
         params,
         mat_activation_dpa,
@@ -266,7 +294,10 @@ def evaluate_candidate_proxy(
     )
     tox_threshold = toxicity_threshold(params)
     toxicity_pre_cellulose_proxy = float(
-        overlap_index * scaled_load * (1.0 + 0.5 * max(effective_eff, 0.0))
+        overlap_index
+        * scaled_load
+        * (1.0 + 0.5 * max(effective_eff, 0.0))
+        * comp_profile["cytosolic_quinone_scale"]
     )
     toxicity_gate_pass = bool(toxicity_pre_cellulose_proxy <= tox_threshold)
     toxicity_ratio = float(toxicity_pre_cellulose_proxy / max(tox_threshold, 1e-9))
@@ -307,6 +338,10 @@ def evaluate_candidate_proxy(
         "toxicity_threshold": float(tox_threshold),
         "toxicity_ratio": float(toxicity_ratio),
         "toxicity_gate_pass": bool(toxicity_gate_pass),
+        "use_vacuolar_transit_peptides": bool(comp_profile["use_vacuolar_transit_peptides"]),
+        "vacuolar_sequestration_fraction": float(comp_profile["vacuolar_sequestration_fraction"]),
+        "cytosolic_quinone_leak_fraction": float(comp_profile["cytosolic_quinone_leak_fraction"]),
+        "cytosolic_quinone_scale": float(comp_profile["cytosolic_quinone_scale"]),
         "grade": fiber.grade(),
     }
 
@@ -360,6 +395,7 @@ def simulate_candidate_profile(
         return cache[key]
 
     params = build_candidate_params(base_params, candidate)
+    comp_profile = compartmentalization_profile(params)
     expr = run_odes_silent(run_simulation, params)
     mel = run_odes_silent(run_melanin_simulation, params, expr)
 
@@ -428,10 +464,11 @@ def simulate_candidate_profile(
     late_fraction = max(expression_late_fraction, pathway_late_fraction)
 
     tox_slice = slice(0, idx_after_90 + 1)
-    toxicity_pre_cellulose = float(max(
+    toxicity_pre_cellulose_raw = float(max(
         np.max(mel["dopaquinone"][tox_slice]),
         np.max(mel["dopachrome"][tox_slice]),
     ))
+    toxicity_pre_cellulose = float(toxicity_pre_cellulose_raw * comp_profile["cytosolic_quinone_scale"])
 
     profile = {
         "overlap_index": float(overlap_index),
@@ -441,7 +478,12 @@ def simulate_candidate_profile(
         "late_fraction": float(late_fraction),
         "expression_late_fraction": float(expression_late_fraction),
         "pathway_late_fraction": float(pathway_late_fraction),
+        "toxicity_pre_cellulose_raw": float(toxicity_pre_cellulose_raw),
         "toxicity_pre_cellulose": float(toxicity_pre_cellulose),
+        "use_vacuolar_transit_peptides": bool(comp_profile["use_vacuolar_transit_peptides"]),
+        "vacuolar_sequestration_fraction": float(comp_profile["vacuolar_sequestration_fraction"]),
+        "cytosolic_quinone_leak_fraction": float(comp_profile["cytosolic_quinone_leak_fraction"]),
+        "cytosolic_quinone_scale": float(comp_profile["cytosolic_quinone_scale"]),
     }
     cache[key] = profile
     return profile
@@ -507,10 +549,15 @@ def refine_candidates_with_odes(
             "efficiency_scale_silencing": float(eff_meta["silencing_scale"]),
             "efficiency_scale_event": float(eff_meta["event_scale"]),
             "efficiency_scale_ros": float(eff_meta["ros_scale"]),
+            "toxicity_pre_cellulose_raw": float(profile.get("toxicity_pre_cellulose_raw", profile["toxicity_pre_cellulose"])),
             "toxicity_pre_cellulose": float(profile["toxicity_pre_cellulose"]),
             "toxicity_threshold": float(tox_threshold),
             "toxicity_ratio": float(tox_ratio),
             "toxicity_gate_pass": True,
+            "use_vacuolar_transit_peptides": bool(profile.get("use_vacuolar_transit_peptides", False)),
+            "vacuolar_sequestration_fraction": float(profile.get("vacuolar_sequestration_fraction", 0.0)),
+            "cytosolic_quinone_leak_fraction": float(profile.get("cytosolic_quinone_leak_fraction", 1.0)),
+            "cytosolic_quinone_scale": float(profile.get("cytosolic_quinone_scale", 1.0)),
             "pigment_load": float(pigment_load),
             "pigment_density": float(effective_color_pigment),
             "uhml_mm": float(fiber.uhml_mm),

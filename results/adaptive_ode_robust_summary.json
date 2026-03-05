@@ -1,8 +1,8 @@
 {
-  "num_input_adaptive_candidates": 3,
-  "num_ode_refined_candidates": 3,
-  "num_ode_pareto": null,
-  "num_ode_top_for_robustness": 3,
+  "num_input_adaptive_candidates": 12,
+  "num_ode_refined_candidates": 12,
+  "num_ode_pareto": 1,
+  "num_ode_top_for_robustness": 6,
   "n_trials_per_candidate": 120,
   "seed": 777,
   "thresholds": {
@@ -26,8 +26,8 @@
     "silencing_sigma": 0.03,
     "event_cv_sigma": 0.04
   },
-  "num_robust_candidates": 3,
+  "num_robust_candidates": 6,
   "num_final_top3": 3,
-  "best_success_rate": 0.8333333333333334,
-  "best_robust_score": 0.8498336920145211
+  "best_success_rate": 0.8833333333333333,
+  "best_robust_score": 0.88047546608101
 }

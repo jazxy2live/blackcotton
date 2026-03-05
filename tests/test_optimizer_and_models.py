@@ -3,8 +3,14 @@ from unittest.mock import patch
 
 from src.fiber_model import load_params as load_fiber_params
 from src.fiber_model import model_engineered_black
-from src.construct_designer import resolve_melA_cds
+from src.construct_designer import (
+    GeneticElement,
+    fuse_transit_peptide,
+    prepare_transit_peptide,
+    resolve_melA_cds,
+)
 from src.tradeoff_optimizer import (
+    compartmentalization_profile,
     effective_pigment_levels,
     load_params as load_optimizer_params,
     pareto_front,
@@ -140,6 +146,40 @@ class SequenceResolverTests(unittest.TestCase):
         self.assertEqual(len(seq) % 3, 0)
         self.assertIn(seq[:3], {"ATG", "GTG", "TTG"})
         self.assertIn(seq[-3:], {"TAA", "TAG", "TGA"})
+
+    def test_transit_peptide_fusion_is_in_frame_and_keeps_terminal_stop(self):
+        transit = prepare_transit_peptide("ATGGCTGCTGCTTAA", "toy_tp")
+        gene = GeneticElement(
+            name="toy_gene",
+            element_type="gene",
+            sequence="ATGGCTGCTTAA",
+            description="toy",
+        )
+        fused = fuse_transit_peptide(gene, transit, "toy_tp.fasta")
+
+        self.assertTrue(fused.name.endswith("_vTP"))
+        self.assertEqual(len(fused.sequence) % 3, 0)
+        self.assertEqual(fused.sequence[:3], "ATG")
+        self.assertIn(fused.sequence[-3:], {"TAA", "TAG", "TGA"})
+
+
+class CompartmentalizationTests(unittest.TestCase):
+    def test_compartmentalization_profile_reduces_cytosolic_scale(self):
+        params = load_optimizer_params()
+        out = compartmentalization_profile(params)
+        self.assertGreaterEqual(out["vacuolar_sequestration_fraction"], 0.0)
+        self.assertGreater(out["cytosolic_quinone_leak_fraction"], 0.0)
+        self.assertGreater(out["cytosolic_quinone_scale"], 0.0)
+        self.assertLess(out["cytosolic_quinone_scale"], 1.0)
+        self.assertTrue(out["use_vacuolar_transit_peptides"])
+
+        params_off = load_optimizer_params()
+        params_off.setdefault("construct", {})["use_vacuolar_transit_peptides"] = False
+        off = compartmentalization_profile(params_off)
+        self.assertFalse(off["use_vacuolar_transit_peptides"])
+        self.assertAlmostEqual(off["vacuolar_sequestration_fraction"], 0.0, places=9)
+        self.assertAlmostEqual(off["cytosolic_quinone_leak_fraction"], 1.0, places=9)
+        self.assertAlmostEqual(off["cytosolic_quinone_scale"], 1.0, places=9)
 
 
 class RobustnessTests(unittest.TestCase):
