@@ -1,0 +1,45 @@
+{
+  "freeze_id": "blackcotton-prod-freeze-2026-03-05-melC1",
+  "frozen_at_utc": "2026-03-05T10:02:39+00:00",
+  "production_config_path": "config/parameters_production.yaml",
+  "production_config_sha256": "e80cb5d325b91d24102c7f1a78bc8f4a70cb04e7774e0e74adf453a16ac9de8b",
+  "upgrade_from": "blackcotton-prod-freeze-2026-03-04",
+  "upgrade_reason": "melC1 copper chaperone: worst-case success 72.7% -> 82.5%, color L* 19.72 -> 18.81",
+  "selection_basis": {
+    "variant_tested": "config/variants/variant_melC1_chaperone.yaml",
+    "variant_report": "results/variant_melC1_2026_03_05_report.md",
+    "worst_case_top_success_rate": 0.825,
+    "worst_case_robust_score": 0.848,
+    "p50_color_L": 18.81,
+    "fragility": 0.053,
+    "comparison": {
+      "V1_melC1": {
+        "worst_case": 0.825,
+        "verdict": "WINNER"
+      },
+      "V2_high_tyrosine": {
+        "worst_case": 0.733,
+        "verdict": "no_effect"
+      },
+      "V3_mushroom_tyr": {
+        "worst_case": 0.825,
+        "verdict": "tied_but_less_dark"
+      },
+      "V4_melC1_late_timing": {
+        "worst_case": 0.825,
+        "verdict": "same_as_V1"
+      }
+    }
+  },
+  "changes_from_previous": {
+    "copper_loading_fraction": "0.92 -> 0.98",
+    "tyrosinase_activation_fraction": "0.90 -> 0.95"
+  },
+  "policy": {
+    "default_loader_priority": [
+      "BLACKCOTTON_CONFIG_PATH (override)",
+      "config/parameters_production.yaml",
+      "config/parameters.yaml (fallback)"
+    ]
+  }
+}

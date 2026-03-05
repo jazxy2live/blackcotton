@@ -106,9 +106,9 @@ melanin_pathway:
 # ---- Failure-Risk Controls (fail-first robustness modeling) ----
 failure_risks:
   # Fraction of tyrosinase that is copper-loaded and catalytically competent.
-  copper_loading_fraction: 0.92
-  # Activation/maturation fraction of tyrosinase (e.g., caddie/chaperone effects).
-  tyrosinase_activation_fraction: 0.90
+  copper_loading_fraction: 0.98        # UPGRADED: melC1 chaperone improves Cu loading (was 0.92)
+  # Activation/maturation fraction of tyrosinase (melC1 chaperone assists folding).
+  tyrosinase_activation_fraction: 0.95  # UPGRADED: melC1 chaperone assists folding (was 0.90)
   # Pre-cellulose quinone/toxic intermediate ceiling (arbitrary model units).
   quinone_stress_threshold: 0.080
   # Higher values buffer oxidative stress and reduce early-toxicity penalties.
