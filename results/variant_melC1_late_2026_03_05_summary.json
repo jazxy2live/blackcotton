@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-03-05T09:38:30+00:00",
+  "config_path": "config/variants/variant_melC1_late_promoter.yaml",
+  "strict_scenario": "strict_high_noise",
+  "n_trials": 120,
+  "seed": 20260305,
+  "grid_size_total": 45000,
+  "deterministic_pool_size": 42180,
+  "seed_candidates": 200,
+  "baseline_strict_high_noise_top_success_rate": 0.525,
+  "hardened_strict_high_noise_top_success_rate": 0.825,
+  "delta_strict_high_noise_top_success_rate": 0.29999999999999993,
+  "baseline_strict_high_noise_top_robust_score": 0.6348668172843819,
+  "hardened_strict_high_noise_top_robust_score": 0.8481221159695869,
+  "delta_strict_high_noise_top_robust_score": 0.21325529868520499,
+  "target_success_rate": 0.85,
+  "target_met": false
+}

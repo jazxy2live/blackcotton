@@ -1,0 +1,74 @@
+[
+  {
+    "scenario": "baseline",
+    "candidate_input_rank": 1,
+    "success_rate": 1.0,
+    "robust_score": 0.9692668904146611
+  },
+  {
+    "scenario": "baseline",
+    "candidate_input_rank": 3,
+    "success_rate": 1.0,
+    "robust_score": 0.9687013001984716
+  },
+  {
+    "scenario": "baseline",
+    "candidate_input_rank": 2,
+    "success_rate": 0.975,
+    "robust_score": 0.9515607298723041
+  },
+  {
+    "scenario": "strict_gate",
+    "candidate_input_rank": 2,
+    "success_rate": 0.8916666666666667,
+    "robust_score": 0.8936021490007955
+  },
+  {
+    "scenario": "strict_gate",
+    "candidate_input_rank": 3,
+    "success_rate": 0.8833333333333333,
+    "robust_score": 0.888248506660956
+  },
+  {
+    "scenario": "strict_gate",
+    "candidate_input_rank": 1,
+    "success_rate": 0.875,
+    "robust_score": 0.8818001099183991
+  },
+  {
+    "scenario": "high_noise",
+    "candidate_input_rank": 3,
+    "success_rate": 0.8916666666666667,
+    "robust_score": 0.8916453234983436
+  },
+  {
+    "scenario": "high_noise",
+    "candidate_input_rank": 2,
+    "success_rate": 0.8416666666666667,
+    "robust_score": 0.8569180706483341
+  },
+  {
+    "scenario": "high_noise",
+    "candidate_input_rank": 1,
+    "success_rate": 0.8333333333333334,
+    "robust_score": 0.8514486689300707
+  },
+  {
+    "scenario": "strict_high_noise",
+    "candidate_input_rank": 2,
+    "success_rate": 0.65,
+    "robust_score": 0.7242278998854296
+  },
+  {
+    "scenario": "strict_high_noise",
+    "candidate_input_rank": 3,
+    "success_rate": 0.6083333333333333,
+    "robust_score": 0.6951964574554461
+  },
+  {
+    "scenario": "strict_high_noise",
+    "candidate_input_rank": 1,
+    "success_rate": 0.5333333333333333,
+    "robust_score": 0.6432721288299299
+  }
+]

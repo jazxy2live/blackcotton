@@ -1,0 +1,157 @@
+# ============================================================================
+# VARIANT: Higher Tyrosine Substrate
+# ============================================================================
+# Hypothesis: Cotton fiber cells may have more free L-tyrosine than our
+# conservative 0.5 mM estimate, or we could engineer tyrosine biosynthesis
+# upregulation. More substrate = more melanin = darker fiber.
+#
+# Change from production config:
+#   initial_tyrosine_mM: 0.5 → 0.8
+#
+# Everything else identical to parameters_production.yaml.
+# ============================================================================
+
+fiber_development:
+  initiation_start: 0
+  initiation_end: 3
+  elongation_start: 3
+  elongation_end: 21
+  scw_synthesis_start: 16
+  scw_synthesis_end: 40
+  maturation_start: 35
+  maturation_end: 50
+  total_development_days: 50
+  target_length_mm: 30.0
+  target_strength_g_tex: 30.0
+  target_micronaire: 4.2
+  target_uniformity: 83.0
+
+cellulose:
+  max_synthesis_rate: 0.15
+  peak_dpa: 28
+  total_cellulose_per_fiber: 3.5
+  crystallinity_index: 0.70
+  hill_coefficient: 4.0
+  half_max_dpa: 25.0
+
+promoters:
+  pGhMat1:
+    description: "Maturation-specific promoter from G. hirsutum"
+    activation_dpa: 40
+    peak_dpa: 45
+    strength_relative: 1.0
+    hill_coefficient: 8.0
+    leakage_fraction: 0.01
+  pGhSCW_late:
+    description: "Late secondary cell wall promoter"
+    activation_dpa: 32
+    peak_dpa: 38
+    strength_relative: 1.0
+    hill_coefficient: 6.0
+    leakage_fraction: 0.02
+  p35S:
+    description: "CaMV 35S constitutive promoter (for selection marker)"
+    activation_dpa: 0
+    peak_dpa: 0
+    strength_relative: 1.0
+    hill_coefficient: 1.0
+    leakage_fraction: 1.0
+
+melanin_pathway:
+  tyrosinase_melA:
+    Km_tyrosine: 0.65
+    Vmax: 2.5
+    kcat: 150.0
+    description: "Streptomyces antibioticus tyrosinase (NCBI M11582)"
+    molecular_weight_kDa: 30.9
+  TYRP1:
+    Km_dopaquinone: 0.25
+    Vmax: 1.8
+    kcat: 95.0
+    description: "Tyrosinase-related protein 1"
+  DCT:
+    Km_dopachrome: 0.30
+    Vmax: 1.2
+    kcat: 80.0
+    description: "Dopachrome tautomerase"
+
+  # >>> THIS IS THE CHANGE: more substrate available <<<
+  initial_tyrosine_mM: 0.8       # WAS 0.5 — higher free L-Tyr in fiber cells
+  melanin_target_mg_per_fiber: 0.08
+
+  dopaquinone_cyclization_rate: 0.5
+  indole_polymerization_rate: 0.01
+
+  traffic_control:
+    melA_entry_scale: 0.58
+    dopaquinone_drain_scale: 1.25
+    dopachrome_drain_scale: 1.20
+    dct_flux_scale: 1.35
+    tyrp1_flux_scale: 1.30
+    eumelanin_push_scale: 1.25
+
+  compartmentalization:
+    vacuolar_sequestration_fraction: 0.70
+    cytosolic_quinone_leak_fraction: 0.35
+
+failure_risks:
+  copper_loading_fraction: 0.92
+  tyrosinase_activation_fraction: 0.90
+  quinone_stress_threshold: 0.080
+  ros_buffer_capacity: 0.85
+  silencing_probability: 0.06
+  event_expression_cv: 0.12
+
+codon_optimization:
+  target_organism: "Gossypium hirsutum"
+  target_gc_content: 0.43
+  avoid_restriction_sites:
+    - "GGTCTC"
+    - "CGTCTC"
+    - "GAAGAC"
+    - "GAATTC"
+    - "GGATCC"
+
+construct:
+  backbone: "pCAMBIA2300"
+  selectable_marker: "nptII"
+  selection_agent: "Kanamycin"
+  selection_concentration_mg_L: 50
+  agrobacterium_strain: "LBA4404"
+  use_vacuolar_transit_peptides: true
+  transit_peptides:
+    melA: "melA_vacuolar_transit_peptide.fasta"
+    TYRP1: "TYRP1_vacuolar_transit_peptide.fasta"
+    DCT: "DCT_vacuolar_transit_peptide.fasta"
+  cassettes:
+    - name: "melanin_primary"
+      promoter: "pGhMat1"
+      gene: "melA"
+      terminator: "tNOS"
+    - name: "tyrp1_support"
+      promoter: "pGhSCW_late"
+      gene: "GhTYRP1"
+      terminator: "tNOS"
+    - name: "dct_support"
+      promoter: "pGhSCW_late"
+      gene: "GhDCT"
+      terminator: "tNOS"
+    - name: "selection"
+      promoter: "p35S"
+      gene: "nptII"
+      terminator: "tNOS"
+
+transformation:
+  cultivar: "Coker-312"
+  explant: "hypocotyl"
+  co_cultivation_temp_C: 19
+  co_cultivation_hours: 48
+  acetosyringone_mg_L: 50
+  regeneration_days: 85
+  expected_efficiency: 0.03
+
+simulation:
+  time_resolution_hours: 1
+  num_fibers_simulated: 1000
+  noise_fraction: 0.1
+  random_seed: 42
