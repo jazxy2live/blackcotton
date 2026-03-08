@@ -1,11 +1,13 @@
 {
-  "constraint": "temporal_gap_days >= 0 AND toxicity_pre_cellulose <= threshold (hard)",
-  "num_candidates_coarse": 12848,
-  "num_candidates_refined": 112,
+  "constraint": "temporal_gap_days >= 0 AND toxicity_pre_cellulose <= threshold AND ROS proxy does not exceed capacity before 90% opacity",
+  "num_candidates_coarse": 14080,
+  "num_candidates_refined": 116,
+  "num_candidates_refined_chemical_safe": 116,
   "num_pareto_refined": 2,
   "num_top": 12,
-  "best_composite_score": 0.8431536811330413,
-  "best_darkness_L": 26.1320975041302,
-  "best_strength_g_tex": 29.152696860035274,
-  "best_yield_index": 0.9182167769304437
+  "best_composite_score": 0.8655399174582248,
+  "best_darkness_L": 22.393794355006833,
+  "best_strength_g_tex": 29.126822770770996,
+  "best_yield_index": 0.9159143818378216,
+  "best_chemical_peak_ros_ratio": 0.518608029046148
 }

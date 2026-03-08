@@ -70,7 +70,7 @@ melanin_pathway:
     molecular_weight_kDa: 30.9
 
   TYRP1:
-    Km_dopaquinone: 0.25       # mM
+    Km_DHICA: 0.25             # mM
     Vmax: 1.8                  # µmol/min/mg enzyme
     kcat: 95.0                 # s^-1
     description: "Tyrosinase-related protein 1"

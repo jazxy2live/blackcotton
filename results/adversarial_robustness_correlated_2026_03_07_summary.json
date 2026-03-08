@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-03-07T09:45:25+00:00",
+  "num_candidates": 3,
+  "num_scenarios": 8,
+  "n_trials_per_candidate": 240,
+  "seed": 20260307,
+  "correlated_profile": "construct_bundle_v1",
+  "worst_case_best_candidate_input_rank": 2
+}

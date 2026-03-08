@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-03-07T10:55:03+00:00",
+  "config_path": "config/parameters_production.yaml",
+  "strict_scenario": "strict_high_noise",
+  "n_trials": 120,
+  "seed": 20260302,
+  "grid_size_total": 45000,
+  "deterministic_pool_size": 42180,
+  "seed_candidates_before_chemical_gate": 180,
+  "seed_candidates_after_chemical_gate": 180,
+  "baseline_strict_high_noise_top_success_rate": 0.43333333333333335,
+  "hardened_strict_high_noise_top_success_rate": 0.85,
+  "delta_strict_high_noise_top_success_rate": 0.41666666666666663,
+  "baseline_strict_high_noise_top_robust_score": 0.5689787907388899,
+  "hardened_strict_high_noise_top_robust_score": 0.8651568748424392,
+  "delta_strict_high_noise_top_robust_score": 0.2961780841035493,
+  "target_success_rate": 0.85,
+  "target_met": true
+}

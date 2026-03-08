@@ -49,7 +49,7 @@ melanin_pathway:
     description: Streptomyces antibioticus tyrosinase (NCBI M11582)
     molecular_weight_kDa: 30.9
   TYRP1:
-    Km_dopaquinone: 0.25
+    Km_DHICA: 0.25
     Vmax: 1.8
     kcat: 95.0
     description: Tyrosinase-related protein 1

@@ -69,7 +69,7 @@ melanin_pathway:
     description: "Streptomyces antibioticus tyrosinase (NCBI M11582)"
     molecular_weight_kDa: 30.9
   TYRP1:
-    Km_dopaquinone: 0.25
+    Km_DHICA: 0.25
     Vmax: 1.8
     kcat: 95.0
     description: "Tyrosinase-related protein 1"
@@ -80,28 +80,30 @@ melanin_pathway:
     description: "Dopachrome tautomerase"
 
   initial_tyrosine_mM: 0.5
+  tyra_mutant_pump_rate: 0.60
   melanin_target_mg_per_fiber: 0.08
   dopaquinone_cyclization_rate: 0.5
   indole_polymerization_rate: 0.01
 
   traffic_control:
-    melA_entry_scale: 0.58
-    dopaquinone_drain_scale: 1.25
-    dopachrome_drain_scale: 1.20
-    dct_flux_scale: 1.35
-    tyrp1_flux_scale: 1.30
-    eumelanin_push_scale: 1.25
+    melA_entry_scale: 0.08
+    dopaquinone_drain_scale: 3.0
+    dopachrome_drain_scale: 3.0
+    dct_flux_scale: 3.0
+    tyrp1_flux_scale: 3.0
+    eumelanin_push_scale: 3.0
 
   compartmentalization:
-    vacuolar_sequestration_fraction: 0.70
-    cytosolic_quinone_leak_fraction: 0.35
+    vacuolar_sequestration_fraction: 0.95
+    cytosolic_quinone_leak_fraction: 0.05
 
 # melC1 chaperone effect (from V1)
 failure_risks:
   copper_loading_fraction: 0.98
   tyrosinase_activation_fraction: 0.95
-  quinone_stress_threshold: 0.080
+  quinone_stress_threshold: 0.130
   ros_buffer_capacity: 0.85
+  catalase_coexpression_multiplier: 100.0
   silencing_probability: 0.06
   event_expression_cv: 0.12
 
@@ -138,6 +140,14 @@ construct:
     - name: "dct_support"
       promoter: "pGhSCW_late"
       gene: "GhDCT"
+      terminator: "tNOS"
+    - name: "ros_sink"
+      promoter: "pGhSCW_late"
+      gene: "GhCAT1"
+      terminator: "tNOS"
+    - name: "substrate_pump"
+      promoter: "pGhSCW_late"
+      gene: "GhTyrA_mutant"
       terminator: "tNOS"
     - name: "selection"
       promoter: "p35S"

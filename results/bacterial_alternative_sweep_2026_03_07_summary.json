@@ -1,0 +1,282 @@
+{
+  "generated_at": "2026-03-07T10:30:23+00:00",
+  "target_ratio": 0.24,
+  "architectures": [
+    {
+      "label": "co_culture",
+      "description": "Separate cellulose and melanin producers sharing one broth.",
+      "target_ratio": 0.24,
+      "required_binding_factor_at_target": 0.3,
+      "no_linker_target_row": {
+        "architecture": "co_culture",
+        "melanin_to_cellulose_ratio": 0.24,
+        "binding_protein_factor": 0.0,
+        "co_localization": 0.55,
+        "cellulose_scale": 0.9712,
+        "binding_affinity": 0.25200000000000006,
+        "bound_fraction": 0.1685414127401555,
+        "hbond_retention": 0.7416634372293665,
+        "wet_matrix_strength": 15.846677665217534,
+        "passes_hbond_gate": false
+      },
+      "recommended_design": {
+        "architecture": "co_culture",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.5,
+        "co_localization": 0.55,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.4850000000000001,
+        "bound_fraction": 0.5087491068802406,
+        "hbond_retention": 0.8022034740259943,
+        "wet_matrix_strength": 17.013131277143287,
+        "passes_hbond_gate": true
+      },
+      "top_safe_designs": [
+        {
+          "architecture": "co_culture",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.5,
+          "co_localization": 0.55,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.4850000000000001,
+          "bound_fraction": 0.5087491068802406,
+          "hbond_retention": 0.8022034740259943,
+          "wet_matrix_strength": 17.013131277143287,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "co_culture",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.6,
+          "co_localization": 0.55,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.54,
+          "bound_fraction": 0.6034832498647263,
+          "hbond_retention": 0.8354763242082004,
+          "wet_matrix_strength": 17.718781883807512,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "co_culture",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.7,
+          "co_localization": 0.55,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.595,
+          "bound_fraction": 0.6910430124157227,
+          "hbond_retention": 0.8665322908364584,
+          "wet_matrix_strength": 18.37741682405961,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "co_culture",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.8,
+          "co_localization": 0.55,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.6500000000000001,
+          "bound_fraction": 0.766741064228543,
+          "hbond_retention": 0.8939229888466198,
+          "wet_matrix_strength": 18.95831874745911,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "co_culture",
+          "melanin_to_cellulose_ratio": 0.28,
+          "binding_protein_factor": 0.5,
+          "co_localization": 0.55,
+          "cellulose_scale": 0.9664,
+          "binding_affinity": 0.49900000000000005,
+          "bound_fraction": 0.5332010732738306,
+          "hbond_retention": 0.8237751895321728,
+          "wet_matrix_strength": 17.514119549605617,
+          "passes_hbond_gate": true
+        }
+      ]
+    },
+    {
+      "label": "single_strain",
+      "description": "Single engineered Komagataeibacter strain with tighter co-localization.",
+      "target_ratio": 0.24,
+      "required_binding_factor_at_target": 0.2,
+      "no_linker_target_row": {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.24,
+        "binding_protein_factor": 0.0,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.9712,
+        "binding_affinity": 0.32,
+        "bound_fraction": 0.24601128355105195,
+        "hbond_retention": 0.7608139892938202,
+        "wet_matrix_strength": 16.255856020847478,
+        "passes_hbond_gate": false
+      },
+      "recommended_design": {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.4,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.498,
+        "bound_fraction": 0.5314583915563169,
+        "hbond_retention": 0.8052206429909019,
+        "wet_matrix_strength": 17.077119396551048,
+        "passes_hbond_gate": true
+      },
+      "top_safe_designs": [
+        {
+          "architecture": "single_strain",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.4,
+          "co_localization": 0.72,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.498,
+          "bound_fraction": 0.5314583915563169,
+          "hbond_retention": 0.8052206429909019,
+          "wet_matrix_strength": 17.077119396551048,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "single_strain",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.5,
+          "co_localization": 0.72,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.553,
+          "bound_fraction": 0.6250408685389298,
+          "hbond_retention": 0.8381376283785293,
+          "wet_matrix_strength": 17.77522282265185,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "single_strain",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.6,
+          "co_localization": 0.72,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.6080000000000001,
+          "bound_fraction": 0.7101268083047297,
+          "hbond_retention": 0.8684291837661615,
+          "wet_matrix_strength": 18.417646129312754,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "single_strain",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.7,
+          "co_localization": 0.72,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.663,
+          "bound_fraction": 0.7826199504671092,
+          "hbond_retention": 0.8948295646943368,
+          "wet_matrix_strength": 18.977545408037493,
+          "passes_hbond_gate": true
+        },
+        {
+          "architecture": "single_strain",
+          "melanin_to_cellulose_ratio": 0.3,
+          "binding_protein_factor": 0.8,
+          "co_localization": 0.72,
+          "cellulose_scale": 0.964,
+          "binding_affinity": 0.7180000000000002,
+          "bound_fraction": 0.8410417883827479,
+          "hbond_retention": 0.9168819126102691,
+          "wet_matrix_strength": 19.445231602638586,
+          "passes_hbond_gate": true
+        }
+      ]
+    }
+  ],
+  "overall_recommendation": {
+    "label": "single_strain",
+    "description": "Single engineered Komagataeibacter strain with tighter co-localization.",
+    "target_ratio": 0.24,
+    "required_binding_factor_at_target": 0.2,
+    "no_linker_target_row": {
+      "architecture": "single_strain",
+      "melanin_to_cellulose_ratio": 0.24,
+      "binding_protein_factor": 0.0,
+      "co_localization": 0.72,
+      "cellulose_scale": 0.9712,
+      "binding_affinity": 0.32,
+      "bound_fraction": 0.24601128355105195,
+      "hbond_retention": 0.7608139892938202,
+      "wet_matrix_strength": 16.255856020847478,
+      "passes_hbond_gate": false
+    },
+    "recommended_design": {
+      "architecture": "single_strain",
+      "melanin_to_cellulose_ratio": 0.3,
+      "binding_protein_factor": 0.4,
+      "co_localization": 0.72,
+      "cellulose_scale": 0.964,
+      "binding_affinity": 0.498,
+      "bound_fraction": 0.5314583915563169,
+      "hbond_retention": 0.8052206429909019,
+      "wet_matrix_strength": 17.077119396551048,
+      "passes_hbond_gate": true
+    },
+    "top_safe_designs": [
+      {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.4,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.498,
+        "bound_fraction": 0.5314583915563169,
+        "hbond_retention": 0.8052206429909019,
+        "wet_matrix_strength": 17.077119396551048,
+        "passes_hbond_gate": true
+      },
+      {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.5,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.553,
+        "bound_fraction": 0.6250408685389298,
+        "hbond_retention": 0.8381376283785293,
+        "wet_matrix_strength": 17.77522282265185,
+        "passes_hbond_gate": true
+      },
+      {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.6,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.6080000000000001,
+        "bound_fraction": 0.7101268083047297,
+        "hbond_retention": 0.8684291837661615,
+        "wet_matrix_strength": 18.417646129312754,
+        "passes_hbond_gate": true
+      },
+      {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.7,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.663,
+        "bound_fraction": 0.7826199504671092,
+        "hbond_retention": 0.8948295646943368,
+        "wet_matrix_strength": 18.977545408037493,
+        "passes_hbond_gate": true
+      },
+      {
+        "architecture": "single_strain",
+        "melanin_to_cellulose_ratio": 0.3,
+        "binding_protein_factor": 0.8,
+        "co_localization": 0.72,
+        "cellulose_scale": 0.964,
+        "binding_affinity": 0.7180000000000002,
+        "bound_fraction": 0.8410417883827479,
+        "hbond_retention": 0.9168819126102691,
+        "wet_matrix_strength": 19.445231602638586,
+        "passes_hbond_gate": true
+      }
+    ]
+  }
+}

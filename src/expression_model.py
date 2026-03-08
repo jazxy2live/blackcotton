@@ -21,6 +21,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import json
 from pathlib import Path
+from typing import Any
 
 from src.config_loader import load_config
 
@@ -32,6 +33,30 @@ RESULTS_DIR = BASE_DIR / "results"
 def load_params() -> dict:
     """Load biological parameters from YAML config."""
     return load_config()
+
+
+def promoter_config_for_gene(params: dict[str, Any], gene_name: str) -> dict[str, Any]:
+    """Resolve promoter kinetics for a gene with backwards-compatible fallbacks."""
+    prom = params["promoters"]
+    if gene_name == "melA":
+        return dict(prom["pGhMat1"])
+    if gene_name == "TYRP1":
+        return dict(prom.get("pGhSCW_TYRP1", prom["pGhSCW_late"]))
+    if gene_name == "DCT":
+        return dict(prom.get("pGhSCW_DCT", prom["pGhSCW_late"]))
+    if gene_name == "nptII":
+        return dict(prom["p35S"])
+    raise KeyError(f"Unsupported gene promoter lookup: {gene_name}")
+
+
+def active_promoter_keys(params: dict[str, Any]) -> list[str]:
+    """Return unique pigment-pathway promoter keys used by the model."""
+    prom = params["promoters"]
+    keys = ["pGhMat1", "pGhSCW_late"]
+    for key in ("pGhSCW_TYRP1", "pGhSCW_DCT"):
+        if key in prom and key not in keys:
+            keys.append(key)
+    return keys
 
 
 def promoter_activity(t_dpa: float, activation_dpa: float, peak_dpa: float,
@@ -128,38 +153,49 @@ def expression_odes(t, y, params):
     # Time in DPA (convert hours to days for promoter lookup)
     t_dpa = t / 24.0  # simulation runs in hours, promoters defined in days
     
-    prom = params['promoters']
-    
     # ── Promoter activities ───────────────────────────────────────────
-    
-    # melA: maturation promoter (pGhMat1)
+
+    mel_cfg = promoter_config_for_gene(params, "melA")
+    tyrp1_cfg = promoter_config_for_gene(params, "TYRP1")
+    dct_cfg = promoter_config_for_gene(params, "DCT")
+    sel_cfg = promoter_config_for_gene(params, "nptII")
+
+    # melA: maturation promoter
     p_melA = promoter_activity(
         t_dpa,
-        prom['pGhMat1']['activation_dpa'],
-        prom['pGhMat1']['peak_dpa'],
-        prom['pGhMat1']['hill_coefficient'],
-        prom['pGhMat1']['leakage_fraction'],
-        prom['pGhMat1']['strength_relative']
+        mel_cfg['activation_dpa'],
+        mel_cfg['peak_dpa'],
+        mel_cfg['hill_coefficient'],
+        mel_cfg['leakage_fraction'],
+        mel_cfg['strength_relative']
     )
-    
-    # TYRP1 & DCT: late SCW promoter
-    p_SCW = promoter_activity(
+
+    # TYRP1 and DCT may optionally use split promoter programs.
+    p_tyrp1 = promoter_activity(
         t_dpa,
-        prom['pGhSCW_late']['activation_dpa'],
-        prom['pGhSCW_late']['peak_dpa'],
-        prom['pGhSCW_late']['hill_coefficient'],
-        prom['pGhSCW_late']['leakage_fraction'],
-        prom['pGhSCW_late']['strength_relative']
+        tyrp1_cfg['activation_dpa'],
+        tyrp1_cfg['peak_dpa'],
+        tyrp1_cfg['hill_coefficient'],
+        tyrp1_cfg['leakage_fraction'],
+        tyrp1_cfg['strength_relative']
     )
-    
+    p_dct = promoter_activity(
+        t_dpa,
+        dct_cfg['activation_dpa'],
+        dct_cfg['peak_dpa'],
+        dct_cfg['hill_coefficient'],
+        dct_cfg['leakage_fraction'],
+        dct_cfg['strength_relative']
+    )
+
     # nptII: constitutive 35S promoter
     p_35S = promoter_activity(
         t_dpa,
-        prom['p35S']['activation_dpa'],
-        prom['p35S']['peak_dpa'],
-        prom['p35S']['hill_coefficient'],
-        prom['p35S']['leakage_fraction'],
-        prom['p35S']['strength_relative']
+        sel_cfg['activation_dpa'],
+        sel_cfg['peak_dpa'],
+        sel_cfg['hill_coefficient'],
+        sel_cfg['leakage_fraction'],
+        sel_cfg['strength_relative']
     )
     
     # ── ODEs ──────────────────────────────────────────────────────────
@@ -169,11 +205,11 @@ def expression_odes(t, y, params):
     d_prot_melA = k_translation * mRNA_melA - k_prot_deg * prot_melA
     
     # TYRP1
-    d_mRNA_TYRP1 = k_transcription * p_SCW - k_mrna_deg * mRNA_TYRP1
+    d_mRNA_TYRP1 = k_transcription * p_tyrp1 - k_mrna_deg * mRNA_TYRP1
     d_prot_TYRP1 = k_translation * mRNA_TYRP1 - k_prot_deg * prot_TYRP1
     
     # DCT
-    d_mRNA_DCT = k_transcription * p_SCW - k_mrna_deg * mRNA_DCT
+    d_mRNA_DCT = k_transcription * p_dct - k_mrna_deg * mRNA_DCT
     d_prot_DCT = k_translation * mRNA_DCT - k_prot_deg * prot_DCT
     
     # nptII
@@ -220,18 +256,32 @@ def run_simulation(params: dict) -> dict:
     # Compute cellulose accumulation for comparison
     cellulose = np.array([cellulose_accumulation(t, params) for t in t_dpa])
     
-    # Compute promoter activities
-    prom = params['promoters']
+    mel_cfg = promoter_config_for_gene(params, "melA")
+    tyrp1_cfg = promoter_config_for_gene(params, "TYRP1")
+    dct_cfg = promoter_config_for_gene(params, "DCT")
+    anchor_scw_cfg = dict(params["promoters"]["pGhSCW_late"])
     prom_melA = np.array([promoter_activity(
-        t, prom['pGhMat1']['activation_dpa'], prom['pGhMat1']['peak_dpa'],
-        prom['pGhMat1']['hill_coefficient'], prom['pGhMat1']['leakage_fraction'],
-        prom['pGhMat1']['strength_relative']
+        t, mel_cfg['activation_dpa'], mel_cfg['peak_dpa'],
+        mel_cfg['hill_coefficient'], mel_cfg['leakage_fraction'],
+        mel_cfg['strength_relative']
     ) for t in t_dpa])
-    
+
+    prom_tyrp1 = np.array([promoter_activity(
+        t, tyrp1_cfg['activation_dpa'], tyrp1_cfg['peak_dpa'],
+        tyrp1_cfg['hill_coefficient'], tyrp1_cfg['leakage_fraction'],
+        tyrp1_cfg['strength_relative']
+    ) for t in t_dpa])
+
+    prom_dct = np.array([promoter_activity(
+        t, dct_cfg['activation_dpa'], dct_cfg['peak_dpa'],
+        dct_cfg['hill_coefficient'], dct_cfg['leakage_fraction'],
+        dct_cfg['strength_relative']
+    ) for t in t_dpa])
+
     prom_SCW = np.array([promoter_activity(
-        t, prom['pGhSCW_late']['activation_dpa'], prom['pGhSCW_late']['peak_dpa'],
-        prom['pGhSCW_late']['hill_coefficient'], prom['pGhSCW_late']['leakage_fraction'],
-        prom['pGhSCW_late']['strength_relative']
+        t, anchor_scw_cfg['activation_dpa'], anchor_scw_cfg['peak_dpa'],
+        anchor_scw_cfg['hill_coefficient'], anchor_scw_cfg['leakage_fraction'],
+        anchor_scw_cfg['strength_relative']
     ) for t in t_dpa])
     
     results = {
@@ -247,6 +297,8 @@ def run_simulation(params: dict) -> dict:
         'protein_nptII': sol.y[7],
         'cellulose': cellulose,
         'promoter_melA': prom_melA,
+        'promoter_TYRP1': prom_tyrp1,
+        'promoter_DCT': prom_dct,
         'promoter_SCW_late': prom_SCW,
     }
     

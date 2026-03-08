@@ -24,12 +24,15 @@ import numpy as np
 
 from src.config_loader import load_config
 from src.expression_model import (
+    promoter_config_for_gene,
     cellulose_accumulation,
     promoter_activity,
     run_simulation,
 )
+from src.failure_risk_model import resolved_failure_risks
 from src.fiber_model import model_engineered_black
 from src.melanin_pathway import run_melanin_simulation
+from src.pathway_safety_models import simulate_chemical_ros_safety
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = BASE_DIR / "config"
@@ -41,14 +44,6 @@ REFINED_LOAD_SCALE = 0.88
 MAX_STRUCTURAL_LOAD = 0.90
 MAX_VISIBLE_PIGMENT = 0.98
 RETENTION_GAIN = 1.00
-DEFAULT_FAILURE_RISKS = {
-    "copper_loading_fraction": 1.0,
-    "tyrosinase_activation_fraction": 1.0,
-    "quinone_stress_threshold": 0.08,
-    "ros_buffer_capacity": 1.0,
-    "silencing_probability": 0.0,
-    "event_expression_cv": 0.0,
-}
 
 
 def load_params() -> dict:
@@ -60,16 +55,7 @@ def sigmoid(x: np.ndarray, midpoint: float, slope: float) -> np.ndarray:
 
 
 def failure_risk_params(params: dict[str, Any]) -> dict[str, float]:
-    cfg = dict(DEFAULT_FAILURE_RISKS)
-    cfg.update(params.get("failure_risks", {}))
-    return {
-        "copper_loading_fraction": float(np.clip(cfg["copper_loading_fraction"], 0.0, 1.0)),
-        "tyrosinase_activation_fraction": float(np.clip(cfg["tyrosinase_activation_fraction"], 0.0, 1.0)),
-        "quinone_stress_threshold": float(max(cfg["quinone_stress_threshold"], 1e-6)),
-        "ros_buffer_capacity": float(np.clip(cfg["ros_buffer_capacity"], 0.0, 1.5)),
-        "silencing_probability": float(np.clip(cfg["silencing_probability"], 0.0, 0.80)),
-        "event_expression_cv": float(np.clip(cfg["event_expression_cv"], 0.0, 0.80)),
-    }
+    return resolved_failure_risks(params)
 
 
 def effective_melanin_efficiency(
@@ -182,44 +168,96 @@ def compute_proxy_signals(
         temporal_gap_days
         late_fraction_proxy (0-1)
     """
+    def candidate_promoter_profiles() -> dict[str, dict[str, float]]:
+        total_days_local = float(total_days)
+        anchor_scw_cfg = dict(params["promoters"]["pGhSCW_late"])
+        anchor_strength = max(float(anchor_scw_cfg.get("strength_relative", 1.0)), 1e-9)
+
+        profiles: dict[str, dict[str, float]] = {}
+
+        mat_cfg_local = promoter_config_for_gene(params, "melA")
+        mat_peak_delta_local = max(float(mat_cfg_local["peak_dpa"]) - float(mat_cfg_local["activation_dpa"]), 1.0)
+        profiles["melA"] = {
+            "activation_dpa": float(np.clip(mat_activation_dpa, 0.0, total_days_local)),
+            "peak_dpa": float(np.clip(mat_activation_dpa + mat_peak_delta_local, 0.0, total_days_local)),
+            "hill_coefficient": float(mat_cfg_local["hill_coefficient"]),
+            "leakage_fraction": float(mat_cfg_local["leakage_fraction"]),
+            "strength_relative": float(mat_strength),
+        }
+
+        for gene_name in ("TYRP1", "DCT"):
+            gene_cfg = promoter_config_for_gene(params, gene_name)
+            activation_offset = float(gene_cfg["activation_dpa"]) - float(anchor_scw_cfg["activation_dpa"])
+            peak_delta_local = max(float(gene_cfg["peak_dpa"]) - float(gene_cfg["activation_dpa"]), 1.0)
+            strength_scale = float(gene_cfg["strength_relative"]) / anchor_strength
+            gene_activation = float(np.clip(scw_activation_dpa + activation_offset, 0.0, total_days_local))
+            profiles[gene_name] = {
+                "activation_dpa": gene_activation,
+                "peak_dpa": float(np.clip(gene_activation + peak_delta_local, 0.0, total_days_local)),
+                "hill_coefficient": float(gene_cfg["hill_coefficient"]),
+                "leakage_fraction": float(gene_cfg["leakage_fraction"]),
+                "strength_relative": float(scw_strength * strength_scale),
+            }
+
+        return profiles
+
     total_days = params["fiber_development"]["total_development_days"]
     t_dpa = np.linspace(0.0, float(total_days), int(total_days * 8) + 1)  # 3-hour resolution
 
-    prom = params["promoters"]
-    mat_cfg = prom["pGhMat1"]
-    scw_cfg = prom["pGhSCW_late"]
-
-    mat_peak_delta = max(float(mat_cfg["peak_dpa"]) - float(mat_cfg["activation_dpa"]), 1.0)
-    scw_peak_delta = max(float(scw_cfg["peak_dpa"]) - float(scw_cfg["activation_dpa"]), 1.0)
-    mat_peak = mat_activation_dpa + mat_peak_delta
-    scw_peak = scw_activation_dpa + scw_peak_delta
+    profiles = candidate_promoter_profiles()
+    mat_cfg = profiles["melA"]
+    tyrp1_cfg = profiles["TYRP1"]
+    dct_cfg = profiles["DCT"]
 
     p_melA = np.array([
         promoter_activity(
             t,
-            mat_activation_dpa,
-            mat_peak,
+            float(mat_cfg["activation_dpa"]),
+            float(mat_cfg["peak_dpa"]),
             float(mat_cfg["hill_coefficient"]),
             float(mat_cfg["leakage_fraction"]),
-            mat_strength,
+            float(mat_cfg["strength_relative"]),
         )
         for t in t_dpa
     ])
-    p_scw = np.array([
+    p_tyrp1 = np.array([
         promoter_activity(
             t,
-            scw_activation_dpa,
-            scw_peak,
-            float(scw_cfg["hill_coefficient"]),
-            float(scw_cfg["leakage_fraction"]),
-            scw_strength,
+            float(tyrp1_cfg["activation_dpa"]),
+            float(tyrp1_cfg["peak_dpa"]),
+            float(tyrp1_cfg["hill_coefficient"]),
+            float(tyrp1_cfg["leakage_fraction"]),
+            float(tyrp1_cfg["strength_relative"]),
+        )
+        for t in t_dpa
+    ])
+    p_dct = np.array([
+        promoter_activity(
+            t,
+            float(dct_cfg["activation_dpa"]),
+            float(dct_cfg["peak_dpa"]),
+            float(dct_cfg["hill_coefficient"]),
+            float(dct_cfg["leakage_fraction"]),
+            float(dct_cfg["strength_relative"]),
         )
         for t in t_dpa
     ])
 
-    max_strength = max(mat_strength, scw_strength, 1.0)
-    synergy = np.sqrt(np.clip(p_melA * p_scw, 0.0, None))
-    melanin_signal = np.clip((0.55 * p_melA + 0.25 * p_scw + 0.20 * synergy) / max_strength, 0.0, 1.0)
+    # The downstream enzymes do not have identical roles, so DCT is weighted
+    # slightly earlier/heavier than TYRP1 when estimating pathway support.
+    support_signal = np.clip(0.6 * p_dct + 0.4 * p_tyrp1, 0.0, None)
+    max_strength = max(
+        float(mat_cfg["strength_relative"]),
+        float(tyrp1_cfg["strength_relative"]),
+        float(dct_cfg["strength_relative"]),
+        1.0,
+    )
+    synergy = np.sqrt(np.clip(p_melA * support_signal, 0.0, None))
+    melanin_signal = np.clip(
+        (0.55 * p_melA + 0.15 * p_dct + 0.10 * p_tyrp1 + 0.20 * synergy) / max_strength,
+        0.0,
+        1.0,
+    )
 
     cellulose = np.array([cellulose_accumulation(t, params) for t in t_dpa])
     cellulose_max = float(cellulose.max()) if cellulose.size else 0.0
@@ -350,20 +388,37 @@ def build_candidate_params(base_params: dict, candidate: dict) -> dict:
     params = copy.deepcopy(base_params)
     prom = params["promoters"]
 
-    base_mat = base_params["promoters"]["pGhMat1"]
-    base_scw = base_params["promoters"]["pGhSCW_late"]
     total_days = float(params["fiber_development"]["total_development_days"])
 
+    base_mat = promoter_config_for_gene(base_params, "melA")
+    base_scw_anchor = dict(base_params["promoters"]["pGhSCW_late"])
     mat_peak_delta = max(float(base_mat["peak_dpa"]) - float(base_mat["activation_dpa"]), 1.0)
-    scw_peak_delta = max(float(base_scw["peak_dpa"]) - float(base_scw["activation_dpa"]), 1.0)
+    scw_anchor_peak_delta = max(
+        float(base_scw_anchor["peak_dpa"]) - float(base_scw_anchor["activation_dpa"]),
+        1.0,
+    )
 
     prom["pGhMat1"]["activation_dpa"] = float(candidate["mat_activation_dpa"])
     prom["pGhMat1"]["peak_dpa"] = float(min(candidate["mat_activation_dpa"] + mat_peak_delta, total_days))
     prom["pGhMat1"]["strength_relative"] = float(candidate["mat_strength"])
 
     prom["pGhSCW_late"]["activation_dpa"] = float(candidate["scw_activation_dpa"])
-    prom["pGhSCW_late"]["peak_dpa"] = float(min(candidate["scw_activation_dpa"] + scw_peak_delta, total_days))
+    prom["pGhSCW_late"]["peak_dpa"] = float(min(candidate["scw_activation_dpa"] + scw_anchor_peak_delta, total_days))
     prom["pGhSCW_late"]["strength_relative"] = float(candidate["scw_strength"])
+
+    anchor_strength = max(float(base_scw_anchor.get("strength_relative", 1.0)), 1e-9)
+    for key, gene_name in (("pGhSCW_TYRP1", "TYRP1"), ("pGhSCW_DCT", "DCT")):
+        if key not in prom:
+            continue
+        gene_cfg = promoter_config_for_gene(base_params, gene_name)
+        activation_offset = float(gene_cfg["activation_dpa"]) - float(base_scw_anchor["activation_dpa"])
+        peak_delta = max(float(gene_cfg["peak_dpa"]) - float(gene_cfg["activation_dpa"]), 1.0)
+        strength_scale = float(gene_cfg["strength_relative"]) / anchor_strength
+        gene_activation = float(np.clip(float(candidate["scw_activation_dpa"]) + activation_offset, 0.0, total_days))
+        prom[key]["activation_dpa"] = gene_activation
+        prom[key]["peak_dpa"] = float(min(gene_activation + peak_delta, total_days))
+        prom[key]["strength_relative"] = float(candidate["scw_strength"] * strength_scale)
+
     return params
 
 
@@ -398,6 +453,11 @@ def simulate_candidate_profile(
     comp_profile = compartmentalization_profile(params)
     expr = run_odes_silent(run_simulation, params)
     mel = run_odes_silent(run_melanin_simulation, params, expr)
+    chemical = simulate_chemical_ros_safety(
+        params,
+        expression_results=expr,
+        melanin_results=mel,
+    )
 
     t_expr = expr["t_dpa"]
     cellulose = expr["cellulose"]
@@ -412,6 +472,14 @@ def simulate_candidate_profile(
             "pigment_from_ode": 0.0,
             "late_fraction": 0.0,
             "toxicity_pre_cellulose": 0.0,
+            "chemical_peak_ros_proxy": 0.0,
+            "chemical_peak_ros_ratio": 0.0,
+            "chemical_peak_h2o2_proxy": 0.0,
+            "chemical_opacity_90_dpa": 0.0,
+            "chemical_kill_before_opacity_90": False,
+            "chemical_kill_dpa": None,
+            "chemical_kill_melanin_mM_equiv": None,
+            "chemical_kill_opacity_fraction": None,
         }
         cache[key] = profile
         return profile
@@ -484,6 +552,15 @@ def simulate_candidate_profile(
         "vacuolar_sequestration_fraction": float(comp_profile["vacuolar_sequestration_fraction"]),
         "cytosolic_quinone_leak_fraction": float(comp_profile["cytosolic_quinone_leak_fraction"]),
         "cytosolic_quinone_scale": float(comp_profile["cytosolic_quinone_scale"]),
+        "chemical_peak_ros_proxy": float(chemical["peak_ros_proxy"]),
+        "chemical_peak_ros_ratio": float(chemical["peak_ros_ratio"]),
+        "chemical_peak_h2o2_proxy": float(chemical["peak_h2o2_proxy"]),
+        "chemical_ros_threshold": float(chemical["ros_threshold"]),
+        "chemical_opacity_90_dpa": float(chemical["opacity_90_dpa"]),
+        "chemical_kill_before_opacity_90": bool(chemical["kill_before_opacity_90"]),
+        "chemical_kill_dpa": chemical["kill_dpa"],
+        "chemical_kill_melanin_mM_equiv": chemical["kill_melanin_mM_equiv"],
+        "chemical_kill_opacity_fraction": chemical["kill_opacity_fraction"],
     }
     cache[key] = profile
     return profile
@@ -510,6 +587,10 @@ def refine_candidates_with_odes(
             continue
         # Fail-fast filter for early toxic intermediate accumulation.
         if profile["toxicity_pre_cellulose"] > tox_threshold:
+            continue
+        # Kill-screen gate: reject candidates whose ROS proxy exceeds cellular
+        # capacity before 90% of their simulated pigment load is reached.
+        if bool(profile.get("chemical_kill_before_opacity_90", False)):
             continue
 
         effective_eff, eff_meta = effective_melanin_efficiency(params, candidate["melanin_efficiency"])
@@ -554,6 +635,16 @@ def refine_candidates_with_odes(
             "toxicity_threshold": float(tox_threshold),
             "toxicity_ratio": float(tox_ratio),
             "toxicity_gate_pass": True,
+            "chemical_safety_gate_pass": True,
+            "chemical_peak_ros_proxy": float(profile.get("chemical_peak_ros_proxy", 0.0)),
+            "chemical_peak_ros_ratio": float(profile.get("chemical_peak_ros_ratio", 0.0)),
+            "chemical_peak_h2o2_proxy": float(profile.get("chemical_peak_h2o2_proxy", 0.0)),
+            "chemical_ros_threshold": float(profile.get("chemical_ros_threshold", 0.0)),
+            "chemical_opacity_90_dpa": float(profile.get("chemical_opacity_90_dpa", 0.0)),
+            "chemical_kill_before_opacity_90": bool(profile.get("chemical_kill_before_opacity_90", False)),
+            "chemical_kill_dpa": profile.get("chemical_kill_dpa"),
+            "chemical_kill_melanin_mM_equiv": profile.get("chemical_kill_melanin_mM_equiv"),
+            "chemical_kill_opacity_fraction": profile.get("chemical_kill_opacity_fraction"),
             "use_vacuolar_transit_peptides": bool(profile.get("use_vacuolar_transit_peptides", False)),
             "vacuolar_sequestration_fraction": float(profile.get("vacuolar_sequestration_fraction", 0.0)),
             "cytosolic_quinone_leak_fraction": float(profile.get("cytosolic_quinone_leak_fraction", 1.0)),
@@ -626,6 +717,7 @@ def select_top_candidates(candidates: list[dict], n: int = 12) -> list[dict]:
             and c["strength_g_tex"] >= 27.8
             and c["yield_index"] >= 0.82
             and bool(c.get("toxicity_gate_pass", True))
+            and bool(c.get("chemical_safety_gate_pass", True))
         )
     ]
     pool = viable if viable else candidates
@@ -763,15 +855,25 @@ def save_outputs(
         json.dump(top, f, indent=2)
 
     summary = {
-        "constraint": "temporal_gap_days >= 0 AND toxicity_pre_cellulose <= threshold (hard)",
+        "constraint": (
+            "temporal_gap_days >= 0 AND toxicity_pre_cellulose <= threshold "
+            "AND ROS proxy does not exceed capacity before 90% opacity"
+        ),
         "num_candidates_coarse": len(coarse_candidates),
         "num_candidates_refined": len(refined_candidates),
+        "num_candidates_refined_chemical_safe": sum(
+            1 for c in refined_candidates if bool(c.get("chemical_safety_gate_pass", True))
+        ),
         "num_pareto_refined": len(front),
         "num_top": len(top),
         "best_composite_score": max((c["composite_score"] for c in refined_candidates), default=0.0),
         "best_darkness_L": min((c["color_L"] for c in refined_candidates), default=82.0),
         "best_strength_g_tex": max((c["strength_g_tex"] for c in refined_candidates), default=0.0),
         "best_yield_index": max((c["yield_index"] for c in refined_candidates), default=0.0),
+        "best_chemical_peak_ros_ratio": min(
+            (float(c.get("chemical_peak_ros_ratio", 1e9)) for c in refined_candidates),
+            default=0.0,
+        ),
     }
     with open(RESULTS_DIR / "optimization_summary.json", "w") as f:
         json.dump(summary, f, indent=2)
@@ -805,11 +907,16 @@ def print_report(
     print("\n" + "=" * 110)
     print("  BLACKCOTTON TRADEOFF OPTIMIZER RESULTS")
     print("=" * 110)
-    print("\n  Hard constraints enforced: temporal_gap_days >= 0 and toxicity_pre_cellulose <= threshold")
+    print(
+        "\n  Hard constraints enforced: temporal_gap_days >= 0, "
+        "toxicity_pre_cellulose <= threshold, and no pre-opacity ROS kill"
+    )
     print(f"  Coarse candidates (safe region): {len(coarse_candidates)}")
     print(f"  ODE-refined candidates:          {len(refined_candidates)}")
     print(f"  Pareto-optimal refined:          {len(front)}")
     print(f"  Top candidates reported:         {len(top)}")
+    if top:
+        print(f"  Best reported chemical ROS ratio:{min(float(c.get('chemical_peak_ros_ratio', 0.0)) for c in top):>10.3f}")
     print_candidate_table("TOP CANDIDATES (ODE-Refined, Safe-Timing Only)", top)
     print("\n  Saved:")
     print("    - results/optimization_sweep.json")

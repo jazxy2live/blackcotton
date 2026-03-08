@@ -33,6 +33,7 @@ import json
 from pathlib import Path
 
 from src.config_loader import load_config
+from src.failure_risk_model import resolved_failure_risks
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_DIR = BASE_DIR / "config"
@@ -79,12 +80,12 @@ def melanin_odes(t, y, enzyme_levels, params):
 
     # Fail-first activity scaling: cofactor loading + activation state +
     # transgene stability affect catalytically active enzyme availability.
-    risk = params.get("failure_risks", {})
-    copper_loading = float(np.clip(risk.get("copper_loading_fraction", 1.0), 0.0, 1.0))
-    tyrosinase_activation = float(np.clip(risk.get("tyrosinase_activation_fraction", 1.0), 0.0, 1.0))
-    silencing_prob = float(np.clip(risk.get("silencing_probability", 0.0), 0.0, 0.80))
-    event_cv = float(np.clip(risk.get("event_expression_cv", 0.0), 0.0, 0.80))
-    ros_capacity = float(np.clip(risk.get("ros_buffer_capacity", 1.0), 0.0, 1.5))
+    risk = resolved_failure_risks(params)
+    copper_loading = float(risk["copper_loading_fraction"])
+    tyrosinase_activation = float(risk["tyrosinase_activation_fraction"])
+    silencing_prob = float(risk["silencing_probability"])
+    event_cv = float(risk["event_expression_cv"])
+    ros_capacity = float(risk["ros_buffer_capacity"])
 
     tc = mp.get("traffic_control", {})
     melA_entry_scale = float(np.clip(tc.get("melA_entry_scale", 1.0), 0.05, 2.0))
@@ -95,7 +96,21 @@ def melanin_odes(t, y, enzyme_levels, params):
     eumelanin_push_scale = float(np.clip(tc.get("eumelanin_push_scale", 1.0), 0.20, 3.0))
 
     expression_scale = max(0.05, (1.0 - silencing_prob) * np.exp(-0.5 * (event_cv ** 2)))
-    melA_active = melA_e * copper_loading * tyrosinase_activation * expression_scale * melA_entry_scale
+    
+    # ── THE DETONATOR: melC1 Chaperone Switch ──
+    # Instead of a static activation fraction, melA is locked in an inactive state.
+    # It requires the melC1 chaperone to fold and load copper. We model melC1 
+    # as being blasted late by the maturation promoter (e.g. peaking around day 45).
+    t_dpa = t / 24.0
+    melC1_level = 0.0
+    if t_dpa > 38.0:
+        # Logistic release of the detonator
+        melC1_level = 1.0 / (1.0 + np.exp(-2.0 * (t_dpa - 40.0)))
+    
+    # True active melA is now conditionally dependent on the detonator
+    true_activation_fraction = tyrosinase_activation * melC1_level
+    melA_active = melA_e * copper_loading * true_activation_fraction * expression_scale * melA_entry_scale
+    
     tyrp1_active = tyrp1_e * expression_scale
     dct_active = dct_e * expression_scale
     detox_scale = float(np.clip(0.80 + 0.30 * ros_capacity, 0.60, 1.25))
@@ -118,14 +133,21 @@ def melanin_odes(t, y, enzyme_levels, params):
     v5 = dct_active * dct_flux_scale * michaelis_menten(DC, dct_params['Vmax'], dct_params['Km_dopachrome'])
 
     # Step 6: DHICA → Indole-5,6-quinone (TYRP1-catalyzed oxidation)
-    v6 = tyrp1_active * tyrp1_flux_scale * michaelis_menten(DHICA, tyrp1_params['Vmax'], tyrp1_params['Km_dopaquinone'])
+    v6 = tyrp1_active * tyrp1_flux_scale * michaelis_menten(DHICA, tyrp1_params['Vmax'], tyrp1_params['Km_DHICA'])
 
     # Step 7: Indole-quinone → Melanin (polymerization)
     v7 = mp['indole_polymerization_rate'] * detox_scale * eumelanin_push_scale * IQ
     
+    # ── THE FUEL PUMP: Mutant TyrA (Feedback-Insensitive) ──
+    # Instead of a static 0.5mM pool, we use a feedback-insensitive prephenate 
+    # dehydrogenase (TyrA) to constantly convert shikimate pathway carbon into 
+    # fresh L-Tyrosine. This pump is driven by the late promoter (proxied by tyrp1_e).
+    pump_rate = float(mp.get('tyra_mutant_pump_rate', 0.0))
+    tyra_pump = pump_rate * tyrp1_e * expression_scale
+
     # ── ODEs ──────────────────────────────────────────────────────────
     
-    dTyr = -v1                          # Consumed by melA
+    dTyr = tyra_pump - v1               # Synthesized/Imported by TyrA pump, consumed by melA
     dDOPA = v1 - v2                     # Produced by step 1, consumed by step 2
     dDQ = v2 - v3                       # Produced by step 2, consumed by cyclization
     dLDC = v3 - v4                      # Produced by cyclization, consumed by oxidation

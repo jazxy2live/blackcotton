@@ -32,8 +32,9 @@ from src.adversarial_robustness_suite import (
     scenario_configs,
 )
 from src.config_loader import resolve_config_path
+from src.pathway_safety_models import simulate_chemical_ros_safety
 from src.robustness_analyzer import run_robustness_analysis
-from src.tradeoff_optimizer import evaluate_candidate_proxy, load_params
+from src.tradeoff_optimizer import build_candidate_params, evaluate_candidate_proxy, load_params
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 RESULTS_DIR = BASE_DIR / "results"
@@ -49,11 +50,22 @@ DEFAULT_GRID = {
 }
 
 
-def find_named_scenario(name: str) -> dict[str, Any]:
-    for scenario in scenario_configs():
+def find_named_scenario(
+    name: str,
+    correlated_profile: str | None = None,
+    include_correlated: bool = False,
+) -> dict[str, Any]:
+    for scenario in scenario_configs(
+        correlated_profile=correlated_profile,
+        include_correlated=include_correlated,
+    ):
         if str(scenario["name"]) == str(name):
             return scenario
     raise ValueError(f"Scenario not found: {name}")
+
+
+def scenario_display_name(name: str) -> str:
+    return str(name).replace("_", " ")
 
 
 def _candidate_key(row: dict[str, Any]) -> tuple[float, float, float, float, float, float, float]:
@@ -157,6 +169,24 @@ def select_seed_candidates(pool: list[dict[str, Any]], limit: int) -> list[dict[
     return deduped
 
 
+def filter_chemical_safe_seed_candidates(
+    params: dict[str, Any],
+    candidates: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in candidates:
+        candidate_params = build_candidate_params(params, row)
+        chemical = simulate_chemical_ros_safety(candidate_params)
+        if bool(chemical["kill_before_opacity_90"]):
+            continue
+        item = dict(row)
+        item["_chemical_peak_ros_ratio"] = float(chemical["peak_ros_ratio"])
+        item["_chemical_peak_ros_proxy"] = float(chemical["peak_ros_proxy"])
+        item["_chemical_opacity_90_dpa"] = float(chemical["opacity_90_dpa"])
+        out.append(item)
+    return out
+
+
 def strip_internal_fields(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for row in rows:
@@ -202,10 +232,17 @@ def run_top3_adversarial_pack(
     top3_candidates: list[dict[str, Any]],
     n_trials: int,
     seed: int,
+    correlated_profile: str | None = None,
+    include_correlated: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     scenario_summary: list[dict[str, Any]] = []
     all_rows: list[dict[str, Any]] = []
-    for i, scenario in enumerate(scenario_configs()):
+    for i, scenario in enumerate(
+        scenario_configs(
+            correlated_profile=correlated_profile,
+            include_correlated=include_correlated,
+        )
+    ):
         robust_rows = run_robustness_analysis(
             params=params,
             candidates=top3_candidates,
@@ -213,6 +250,7 @@ def run_top3_adversarial_pack(
             seed=int(seed) + i * 101,
             thresholds=dict(scenario["thresholds"]),
             noise=dict(scenario["noise"]),
+            correlated_profile=scenario.get("correlated_profile"),
             collect_trial_records=False,
         )
         top = robust_rows[0] if robust_rows else {}
@@ -245,11 +283,12 @@ def _scenario_map(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
 def build_scenario_delta(
     baseline: list[dict[str, Any]],
     hardened: list[dict[str, Any]],
+    scenario_names: list[str],
 ) -> list[dict[str, Any]]:
     b_map = _scenario_map(baseline)
     h_map = _scenario_map(hardened)
     out = []
-    for scenario in [s["name"] for s in scenario_configs()]:
+    for scenario in scenario_names:
         b = b_map.get(str(scenario), {})
         h = h_map.get(str(scenario), {})
         b_s = float(b.get("top_success_rate", 0.0))
@@ -285,15 +324,17 @@ def save_fig(path: Path) -> None:
 
 def build_graph_pack(
     out_dir: Path,
-    baseline_strict_rows: list[dict[str, Any]],
-    hardened_strict_rows: list[dict[str, Any]],
+    baseline_objective_rows: list[dict[str, Any]],
+    hardened_objective_rows: list[dict[str, Any]],
     scenario_delta: list[dict[str, Any]],
+    objective_scenario_name: str,
 ) -> list[str]:
     out_dir.mkdir(parents=True, exist_ok=True)
     files: list[str] = []
+    objective_label = scenario_display_name(objective_scenario_name)
 
-    b_top = baseline_strict_rows[0] if baseline_strict_rows else {}
-    h_top = hardened_strict_rows[0] if hardened_strict_rows else {}
+    b_top = baseline_objective_rows[0] if baseline_objective_rows else {}
+    h_top = hardened_objective_rows[0] if hardened_objective_rows else {}
 
     labels = ["Top success", "Top robust"]
     b_vals = [float(b_top.get("success_rate", 0.0)), float(b_top.get("robust_score", 0.0))]
@@ -306,10 +347,10 @@ def build_graph_pack(
     plt.xticks(x, labels)
     plt.ylim(0.0, 1.0)
     plt.ylabel("Score")
-    plt.title("Strict+High-Noise Best Candidate")
+    plt.title(f"{objective_label} best candidate")
     plt.grid(axis="y", alpha=0.25)
     plt.legend(frameon=False)
-    p1 = out_dir / "01_strict_high_noise_top_gain.png"
+    p1 = out_dir / "01_objective_top_gain.png"
     save_fig(p1)
     files.append(p1.name)
 
@@ -323,15 +364,15 @@ def build_graph_pack(
     plt.xticks(x2, scenarios)
     plt.ylim(0.0, 1.0)
     plt.ylabel("Top success rate")
-    plt.title("Scenario-Wise Top Success")
+    plt.title("Scenario-wise top success")
     plt.grid(alpha=0.25)
     plt.legend(frameon=False)
     p2 = out_dir / "02_scenario_top_success.png"
     save_fig(p2)
     files.append(p2.name)
 
-    b3 = baseline_strict_rows[:3]
-    h3 = hardened_strict_rows[:3]
+    b3 = baseline_objective_rows[:3]
+    h3 = hardened_objective_rows[:3]
     labels3 = ["Rank-1", "Rank-2", "Rank-3"]
     b3_s = [float(r["success_rate"]) for r in b3] + [0.0] * (3 - len(b3))
     h3_s = [float(r["success_rate"]) for r in h3] + [0.0] * (3 - len(h3))
@@ -342,7 +383,7 @@ def build_graph_pack(
     plt.xticks(x3, labels3)
     plt.ylim(0.0, 1.0)
     plt.ylabel("Success rate")
-    plt.title("Strict+High-Noise Top-3 Success Distribution")
+    plt.title(f"{objective_label} top-3 success distribution")
     plt.grid(axis="y", alpha=0.25)
     plt.legend(frameon=False)
     p3 = out_dir / "03_top3_success_distribution.png"
@@ -353,8 +394,9 @@ def build_graph_pack(
     lines.append("# Worst-Case Hardening Graph Pack")
     lines.append("")
     lines.append(f"- Generated: `{datetime.now(timezone.utc).replace(microsecond=0).isoformat()}`")
+    lines.append(f"- Objective scenario: `{objective_scenario_name}`")
     lines.append(
-        f"- Strict+high-noise top success: `{float(b_top.get('success_rate', 0.0)):.3f}` -> "
+        f"- Objective top success: `{float(b_top.get('success_rate', 0.0)):.3f}` -> "
         f"`{float(h_top.get('success_rate', 0.0)):.3f}`"
     )
     lines.append("")
@@ -382,24 +424,32 @@ def write_report(
     scenario_delta: list[dict[str, Any]],
     hardened_top3: list[dict[str, Any]],
 ) -> None:
+    objective_label = scenario_display_name(summary["objective_scenario"])
     lines: list[str] = []
     lines.append("# Worst-Case Hardening Sprint Report")
     lines.append("")
-    lines.append("Objective: maximize strict+high-noise success instead of average-case robustness.")
+    lines.append(
+        f"Objective: maximize `{summary['objective_scenario']}` success instead of average-case robustness."
+    )
     lines.append("")
     lines.append("## Headline")
     lines.append("")
     lines.append(
-        f"- Strict+high-noise top success: `{summary['baseline_strict_high_noise_top_success_rate']:.3f}` -> "
-        f"`{summary['hardened_strict_high_noise_top_success_rate']:.3f}` "
-        f"(delta `{summary['delta_strict_high_noise_top_success_rate']:+.3f}`)"
+        f"- {objective_label} top success: `{summary['baseline_objective_top_success_rate']:.3f}` -> "
+        f"`{summary['hardened_objective_top_success_rate']:.3f}` "
+        f"(delta `{summary['delta_objective_top_success_rate']:+.3f}`)"
     )
     lines.append(
-        f"- Strict+high-noise top robust score: `{summary['baseline_strict_high_noise_top_robust_score']:.3f}` -> "
-        f"`{summary['hardened_strict_high_noise_top_robust_score']:.3f}` "
-        f"(delta `{summary['delta_strict_high_noise_top_robust_score']:+.3f}`)"
+        f"- {objective_label} top robust score: `{summary['baseline_objective_top_robust_score']:.3f}` -> "
+        f"`{summary['hardened_objective_top_robust_score']:.3f}` "
+        f"(delta `{summary['delta_objective_top_robust_score']:+.3f}`)"
     )
     lines.append(f"- Target success (`>= {summary['target_success_rate']:.3f}`): `{summary['target_met']}`")
+    lines.append(f"- Correlated profile: `{summary['correlated_profile']}`")
+    lines.append(
+        f"- Chemical-safe seeds: `{summary['seed_candidates_after_chemical_gate']}` / "
+        f"`{summary['seed_candidates_before_chemical_gate']}`"
+    )
     lines.append("")
     lines.append("## Scenario Delta")
     lines.append("")
@@ -411,7 +461,7 @@ def write_report(
             f"{row['hardened_top_success_rate']:.3f} | {row['delta_top_success_rate']:+.3f} |"
         )
     lines.append("")
-    lines.append("## Hardened Top 3 (strict-high-noise ranked)")
+    lines.append(f"## Hardened Top 3 ({objective_label} ranked)")
     lines.append("")
     lines.append("| Rank | Success | Robust | Fragility | p50 L* | p50 Strength | p50 Yield | p50 Gap | Params |")
     lines.append("|---:|---:|---:|---:|---:|---:|---:|---:|---|")
@@ -444,13 +494,30 @@ def run(
     min_temporal_gap_days: float,
     target_success_rate: float,
     include_graphs: bool,
+    objective_scenario_name: str,
+    correlated_profile: str | None,
 ) -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     params = load_params_from_path(config_path)
-    strict_high_noise = find_named_scenario("strict_high_noise")
-    strict_thr = dict(strict_high_noise["thresholds"])
-    strict_noise = dict(strict_high_noise["noise"])
+    include_correlated = bool(correlated_profile and str(correlated_profile) != "none") or str(
+        objective_scenario_name
+    ).endswith("_correlated")
+    objective_scenario = find_named_scenario(
+        objective_scenario_name,
+        correlated_profile=correlated_profile,
+        include_correlated=include_correlated,
+    )
+    objective_thr = dict(objective_scenario["thresholds"])
+    objective_noise = dict(objective_scenario["noise"])
+    objective_correlated = objective_scenario.get("correlated_profile")
+    scenario_names = [
+        str(s["name"])
+        for s in scenario_configs(
+            correlated_profile=correlated_profile,
+            include_correlated=include_correlated,
+        )
+    ]
 
     current_path = RESULTS_DIR / "final_lab_top3.json"
     if not current_path.exists():
@@ -459,34 +526,39 @@ def run(
         )
     baseline_top3 = normalize_top_candidate_rows(json.loads(current_path.read_text()))
 
-    baseline_strict_rows = run_robustness_analysis(
+    baseline_objective_rows = run_robustness_analysis(
         params=params,
         candidates=baseline_top3,
         n_trials=int(n_trials),
         seed=int(seed),
-        thresholds=strict_thr,
-        noise=strict_noise,
+        thresholds=objective_thr,
+        noise=objective_noise,
+        correlated_profile=objective_correlated,
         collect_trial_records=False,
     )
 
     deterministic_pool = build_deterministic_pool(
         params=params,
-        strict_thresholds=strict_thr,
+        strict_thresholds=objective_thr,
         min_temporal_gap_days=float(min_temporal_gap_days),
     )
-    seed_candidates = select_seed_candidates(deterministic_pool, limit=seed_candidates_limit)
+    seed_candidates_pre_chemical = select_seed_candidates(deterministic_pool, limit=seed_candidates_limit)
+    seed_candidates = filter_chemical_safe_seed_candidates(params, seed_candidates_pre_chemical)
+    if not seed_candidates:
+        raise RuntimeError("Chemical kill gate removed every hardening seed candidate.")
 
-    hardened_strict_rows = run_robustness_analysis(
+    hardened_objective_rows = run_robustness_analysis(
         params=params,
         candidates=seed_candidates,
         n_trials=int(n_trials),
         seed=int(seed) + 77,
-        thresholds=strict_thr,
-        noise=strict_noise,
+        thresholds=objective_thr,
+        noise=objective_noise,
+        correlated_profile=objective_correlated,
         collect_trial_records=False,
     )
     hardened_top3 = pick_top_unique_robust_rows(
-        hardened_strict_rows,
+        hardened_objective_rows,
         n=3,
         min_success_rate=0.20,
         max_fragility_index=0.40,
@@ -498,17 +570,25 @@ def run(
         top3_candidates=baseline_top3,
         n_trials=int(n_trials),
         seed=int(seed) + 900,
+        correlated_profile=correlated_profile,
+        include_correlated=include_correlated,
     )
     hardened_scenario_summary, hardened_candidate_summary, hardened_all_rows = run_top3_adversarial_pack(
         params=params,
         top3_candidates=hardened_top3_candidates,
         n_trials=int(n_trials),
         seed=int(seed) + 1200,
+        correlated_profile=correlated_profile,
+        include_correlated=include_correlated,
     )
-    scenario_delta = build_scenario_delta(baseline_scenario_summary, hardened_scenario_summary)
+    scenario_delta = build_scenario_delta(
+        baseline_scenario_summary,
+        hardened_scenario_summary,
+        scenario_names=scenario_names,
+    )
 
-    b_best = baseline_strict_rows[0] if baseline_strict_rows else {}
-    h_best = hardened_strict_rows[0] if hardened_strict_rows else {}
+    b_best = baseline_objective_rows[0] if baseline_objective_rows else {}
+    h_best = hardened_objective_rows[0] if hardened_objective_rows else {}
     b_success = float(b_best.get("success_rate", 0.0))
     h_success = float(h_best.get("success_rate", 0.0))
     b_robust = float(b_best.get("robust_score", 0.0))
@@ -517,27 +597,30 @@ def run(
     summary = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "config_path": str(config_path.relative_to(BASE_DIR)),
-        "strict_scenario": "strict_high_noise",
+        "objective_scenario": str(objective_scenario_name),
+        "objective_description": str(objective_scenario.get("description", "")),
+        "correlated_profile": str(objective_correlated or "none"),
         "n_trials": int(n_trials),
         "seed": int(seed),
         "grid_size_total": int(len(DEFAULT_GRID["mat_activation_dpa"]) * len(DEFAULT_GRID["scw_activation_dpa"]) * len(DEFAULT_GRID["mat_strength"]) * len(DEFAULT_GRID["scw_strength"]) * len(DEFAULT_GRID["k_competition"]) * len(DEFAULT_GRID["melanin_efficiency"]) * len(DEFAULT_GRID["late_retention_factor"])),
         "deterministic_pool_size": int(len(deterministic_pool)),
-        "seed_candidates": int(len(seed_candidates)),
-        "baseline_strict_high_noise_top_success_rate": b_success,
-        "hardened_strict_high_noise_top_success_rate": h_success,
-        "delta_strict_high_noise_top_success_rate": h_success - b_success,
-        "baseline_strict_high_noise_top_robust_score": b_robust,
-        "hardened_strict_high_noise_top_robust_score": h_robust,
-        "delta_strict_high_noise_top_robust_score": h_robust - b_robust,
+        "seed_candidates_before_chemical_gate": int(len(seed_candidates_pre_chemical)),
+        "seed_candidates_after_chemical_gate": int(len(seed_candidates)),
+        "baseline_objective_top_success_rate": b_success,
+        "hardened_objective_top_success_rate": h_success,
+        "delta_objective_top_success_rate": h_success - b_success,
+        "baseline_objective_top_robust_score": b_robust,
+        "hardened_objective_top_robust_score": h_robust,
+        "delta_objective_top_robust_score": h_robust - b_robust,
         "target_success_rate": float(target_success_rate),
         "target_met": bool(h_success >= float(target_success_rate)),
     }
 
     save_json(RESULTS_DIR / f"{out_prefix}_summary.json", summary)
     save_json(RESULTS_DIR / f"{out_prefix}_seed_candidates.json", strip_internal_fields(seed_candidates))
-    save_json(RESULTS_DIR / f"{out_prefix}_strict_candidates.json", hardened_strict_rows)
+    save_json(RESULTS_DIR / f"{out_prefix}_objective_candidates.json", hardened_objective_rows)
     save_json(RESULTS_DIR / f"{out_prefix}_top3.json", hardened_top3)
-    save_json(RESULTS_DIR / f"{out_prefix}_baseline_strict_rows.json", baseline_strict_rows)
+    save_json(RESULTS_DIR / f"{out_prefix}_baseline_objective_rows.json", baseline_objective_rows)
     save_json(RESULTS_DIR / f"{out_prefix}_scenario_baseline.json", baseline_scenario_summary)
     save_json(RESULTS_DIR / f"{out_prefix}_scenario_hardened.json", hardened_scenario_summary)
     save_json(RESULTS_DIR / f"{out_prefix}_scenario_delta.json", scenario_delta)
@@ -558,16 +641,23 @@ def run(
         graph_dir = RESULTS_DIR / f"{out_prefix}_graphs"
         graph_files = build_graph_pack(
             out_dir=graph_dir,
-            baseline_strict_rows=baseline_strict_rows,
-            hardened_strict_rows=hardened_strict_rows,
+            baseline_objective_rows=baseline_objective_rows,
+            hardened_objective_rows=hardened_objective_rows,
             scenario_delta=scenario_delta,
+            objective_scenario_name=str(objective_scenario_name),
         )
 
     print("\n🚀 BlackCotton Worst-Case Hardening Sprint")
     print("=" * 46)
     print(f"Config: {config_path.relative_to(BASE_DIR)}")
-    print(f"Strict+high-noise top success: {b_success:.3f} -> {h_success:.3f} ({h_success - b_success:+.3f})")
-    print(f"Strict+high-noise top robust:  {b_robust:.3f} -> {h_robust:.3f} ({h_robust - b_robust:+.3f})")
+    print(f"Objective scenario:            {objective_scenario_name}")
+    print(f"Correlated profile:           {objective_correlated or 'none'}")
+    print(f"Objective top success:        {b_success:.3f} -> {h_success:.3f} ({h_success - b_success:+.3f})")
+    print(f"Objective top robust:         {b_robust:.3f} -> {h_robust:.3f} ({h_robust - b_robust:+.3f})")
+    print(
+        f"Chemical-safe seeds:           {summary['seed_candidates_after_chemical_gate']} / "
+        f"{summary['seed_candidates_before_chemical_gate']}"
+    )
     print(f"Target met (>= {target_success_rate:.3f}): {summary['target_met']}")
     print("Saved:")
     print(f"  - results/{out_prefix}_summary.json")
@@ -592,6 +682,16 @@ if __name__ == "__main__":
     parser.add_argument("--min-temporal-gap-days", type=float, default=0.5, help="Deterministic minimum gap filter.")
     parser.add_argument("--target-success-rate", type=float, default=0.85, help="Sprint target for strict-high-noise top success.")
     parser.add_argument(
+        "--objective-scenario",
+        default="strict_high_noise",
+        help="Scenario name from adversarial_robustness_suite to optimize against.",
+    )
+    parser.add_argument(
+        "--correlated-profile",
+        default="none",
+        help="Optional correlated profile name to enable correlated scenarios.",
+    )
+    parser.add_argument(
         "--no-graphs",
         action="store_true",
         help="Disable graph generation.",
@@ -607,4 +707,6 @@ if __name__ == "__main__":
         min_temporal_gap_days=float(args.min_temporal_gap_days),
         target_success_rate=float(args.target_success_rate),
         include_graphs=not bool(args.no_graphs),
+        objective_scenario_name=str(args.objective_scenario),
+        correlated_profile=None if str(args.correlated_profile) == "none" else str(args.correlated_profile),
     )

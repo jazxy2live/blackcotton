@@ -1,0 +1,35 @@
+[
+  {
+    "candidate_input_rank": 2,
+    "num_scenarios": 4,
+    "min_success_rate": 0.43333333333333335,
+    "mean_success_rate": 0.68125,
+    "min_robust_score": 0.5696094280827079,
+    "mean_robust_score": 0.7428400228236051,
+    "worst_scenario": "strict_high_noise",
+    "worst_scenario_success_rate": 0.43333333333333335,
+    "worst_scenario_robust_score": 0.5696094280827079
+  },
+  {
+    "candidate_input_rank": 3,
+    "num_scenarios": 4,
+    "min_success_rate": 0.3333333333333333,
+    "mean_success_rate": 0.6437499999999999,
+    "min_robust_score": 0.498381069324934,
+    "mean_robust_score": 0.7155207701451027,
+    "worst_scenario": "strict_high_noise",
+    "worst_scenario_success_rate": 0.3333333333333333,
+    "worst_scenario_robust_score": 0.498381069324934
+  },
+  {
+    "candidate_input_rank": 1,
+    "num_scenarios": 4,
+    "min_success_rate": 0.20833333333333334,
+    "mean_success_rate": 0.55,
+    "min_robust_score": 0.4154630923178601,
+    "mean_robust_score": 0.6509660957403837,
+    "worst_scenario": "strict_gate",
+    "worst_scenario_success_rate": 0.20833333333333334,
+    "worst_scenario_robust_score": 0.4154630923178601
+  }
+]

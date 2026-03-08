@@ -83,11 +83,14 @@ def normalize_top_candidate_rows(rows: list[dict[str, Any]]) -> list[dict[str, A
     return candidates
 
 
-def scenario_configs() -> list[dict[str, Any]]:
+def scenario_configs(
+    correlated_profile: str | None = None,
+    include_correlated: bool = False,
+) -> list[dict[str, Any]]:
     base_noise = dict(DEFAULT_NOISE)
     base_thr = dict(DEFAULT_THRESHOLDS)
     strict_thr = strict_thresholds(base_thr)
-    return [
+    scenarios = [
         {
             "name": "baseline",
             "thresholds": base_thr,
@@ -113,6 +116,17 @@ def scenario_configs() -> list[dict[str, Any]]:
             "description": "Strict gates plus heavy uncertainty (worst-case in-silico).",
         },
     ]
+    if include_correlated and correlated_profile and str(correlated_profile) != "none":
+        for scenario in list(scenarios):
+            scenarios.append(
+                {
+                    **scenario,
+                    "name": f"{scenario['name']}_correlated",
+                    "description": f"{scenario['description']} Includes correlated construct-failure bundles.",
+                    "correlated_profile": str(correlated_profile),
+                }
+            )
+    return scenarios
 
 
 def scenario_results_rows(
@@ -187,6 +201,7 @@ def write_report(
     lines.append(f"- Candidates tested: `{run_summary['num_candidates']}`")
     lines.append(f"- Scenarios: `{run_summary['num_scenarios']}`")
     lines.append(f"- Trials per scenario/candidate: `{run_summary['n_trials_per_candidate']}`")
+    lines.append(f"- Correlated profile: `{run_summary['correlated_profile']}`")
     lines.append(f"- Worst-case best candidate input rank: `{run_summary['worst_case_best_candidate_input_rank']}`")
     lines.append("")
     lines.append("## Scenario Leaderboard")
@@ -213,7 +228,7 @@ def write_report(
     (RESULTS_DIR / f"{out_prefix}_report.md").write_text("\n".join(lines) + "\n")
 
 
-def run(n_trials: int, seed: int, out_prefix: str) -> None:
+def run(n_trials: int, seed: int, out_prefix: str, correlated_profile: str) -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     top_rows = load_json(RESULTS_DIR / "final_lab_top3.json", [])
@@ -226,7 +241,11 @@ def run(n_trials: int, seed: int, out_prefix: str) -> None:
 
     all_rows: list[dict[str, Any]] = []
     scenario_summary: list[dict[str, Any]] = []
-    scenario_meta = scenario_configs()
+    include_correlated = bool(correlated_profile and str(correlated_profile) != "none")
+    scenario_meta = scenario_configs(
+        correlated_profile=correlated_profile,
+        include_correlated=include_correlated,
+    )
 
     for i, scenario in enumerate(scenario_meta):
         robust_rows = run_robustness_analysis(
@@ -236,6 +255,7 @@ def run(n_trials: int, seed: int, out_prefix: str) -> None:
             seed=seed + i * 101,
             thresholds=dict(scenario["thresholds"]),
             noise=dict(scenario["noise"]),
+            correlated_profile=scenario.get("correlated_profile"),
             collect_trial_records=False,
         )
         scenario_rows = scenario_results_rows(scenario["name"], robust_rows)
@@ -248,6 +268,7 @@ def run(n_trials: int, seed: int, out_prefix: str) -> None:
                 "description": scenario["description"],
                 "thresholds": scenario["thresholds"],
                 "noise": scenario["noise"],
+                "correlated_profile": scenario.get("correlated_profile", ""),
                 "top_candidate_input_rank": int(top.get("input_rank", 0)) if top else 0,
                 "top_success_rate": float(top.get("success_rate", 0.0)) if top else 0.0,
                 "top_robust_score": float(top.get("robust_score", 0.0)) if top else 0.0,
@@ -263,6 +284,7 @@ def run(n_trials: int, seed: int, out_prefix: str) -> None:
         "num_scenarios": len(scenario_meta),
         "n_trials_per_candidate": int(n_trials),
         "seed": int(seed),
+        "correlated_profile": str(correlated_profile if correlated_profile else "none"),
         "worst_case_best_candidate_input_rank": int(best_worst_case.get("candidate_input_rank", 0)) if best_worst_case else 0,
     }
 
@@ -281,6 +303,7 @@ def run(n_trials: int, seed: int, out_prefix: str) -> None:
     print(f"Candidates tested: {len(candidates)}")
     print(f"Scenarios: {len(scenario_meta)}")
     print(f"Trials per scenario/candidate: {n_trials}")
+    print(f"Correlated profile: {correlated_profile if correlated_profile else 'none'}")
     if best_worst_case:
         print(
             f"Worst-case best candidate rank: {best_worst_case['candidate_input_rank']} "
@@ -301,10 +324,16 @@ if __name__ == "__main__":
     parser.add_argument("--n-trials", type=int, default=240, help="Trials per scenario/candidate.")
     parser.add_argument("--seed", type=int, default=20260302, help="RNG seed.")
     parser.add_argument("--out-prefix", default="adversarial_robustness", help="Output prefix under results/.")
+    parser.add_argument(
+        "--correlated-profile",
+        default="construct_bundle_v1",
+        help="Correlated failure profile to append as red-team scenarios. Use `none` to disable.",
+    )
     args = parser.parse_args()
 
     run(
         n_trials=max(50, int(args.n_trials)),
         seed=int(args.seed),
         out_prefix=str(args.out_prefix),
+        correlated_profile=str(args.correlated_profile),
     )

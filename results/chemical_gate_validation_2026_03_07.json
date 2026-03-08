@@ -1,0 +1,52 @@
+{
+  "reference_candidate": {
+    "color_L": 16.571289036344623,
+    "strength_g_tex": 28.998076731198815,
+    "yield_index": 0.9019641853673911,
+    "temporal_gap_days": 1.7083333333333357,
+    "toxicity_pre_cellulose": 0.003108627625818128,
+    "mat_activation_dpa": 38.0,
+    "scw_activation_dpa": 34.0,
+    "mat_strength": 1.1,
+    "scw_strength": 1.1,
+    "k_competition": 0.1,
+    "melanin_efficiency": 1.6,
+    "late_retention_factor": 0.75
+  },
+  "safe_current": {
+    "final_melanin_mM_equiv": 0.499999294003828,
+    "opacity_target_fraction": 0.9,
+    "opacity_90_dpa": 14.582291145572787,
+    "peak_ros_proxy": 0.0531324818326098,
+    "peak_ros_ratio": 0.5488892751302665,
+    "peak_h2o2_proxy": 0.04846960214338393,
+    "peak_dopaquinone": 0.005569913337421849,
+    "peak_dopachrome": 0.03346816303002269,
+    "peak_melA_flux_v2": 0.00348240835223153,
+    "ros_threshold": 0.0968,
+    "kill_before_opacity_90": false,
+    "kill_dpa": null,
+    "kill_melanin_mM_equiv": null,
+    "kill_opacity_fraction": null,
+    "use_vacuolar_transit_peptides": true,
+    "cytosolic_quinone_scale": 0.10500000000000001
+  },
+  "unsafe_melA_2_25x": {
+    "final_melanin_mM_equiv": 0.4999997427081419,
+    "opacity_target_fraction": 0.9,
+    "opacity_90_dpa": 11.555777888944474,
+    "peak_ros_proxy": 0.10048082901390289,
+    "peak_ros_ratio": 1.0380250931188315,
+    "peak_h2o2_proxy": 0.09333733910909352,
+    "peak_dopaquinone": 0.010754949626666186,
+    "peak_dopachrome": 0.07651053634683687,
+    "peak_melA_flux_v2": 0.006730156360321462,
+    "ros_threshold": 0.0968,
+    "kill_before_opacity_90": true,
+    "kill_dpa": 2.5512756378189096,
+    "kill_melanin_mM_equiv": 0.007644669340014237,
+    "kill_opacity_fraction": 0.01528934654767724,
+    "use_vacuolar_transit_peptides": true,
+    "cytosolic_quinone_scale": 0.10500000000000001
+  }
+}

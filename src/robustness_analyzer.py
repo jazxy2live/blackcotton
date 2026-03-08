@@ -20,6 +20,8 @@ from typing import Any
 
 import numpy as np
 
+from src.expression_model import active_promoter_keys, promoter_config_for_gene
+from src.failure_risk_model import resolved_failure_risks
 from src.tradeoff_optimizer import evaluate_candidate_proxy, load_params
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,6 +50,22 @@ DEFAULT_NOISE = {
     "event_cv_sigma": 0.04,
 }
 
+DEFAULT_CORRELATED_PROFILE = {
+    "name": "construct_bundle_v1",
+    "shared_expression_drop": {
+        "probability": 0.22,
+        "sigma": 0.75,
+    },
+    "timing_overlap": {
+        "probability": 0.18,
+        "sigma": 0.70,
+    },
+    "storage_slip": {
+        "probability": 0.14,
+        "sigma": 0.85,
+    },
+}
+
 
 def _bounded(value: float, lo: float, hi: float) -> float:
     return float(np.clip(value, lo, hi))
@@ -61,6 +79,34 @@ def _lognormal_factor(rng: np.random.Generator, cv: float) -> float:
     sigma = float(np.sqrt(sigma2))
     mu = -0.5 * sigma2
     return float(np.exp(rng.normal(mu, sigma)))
+
+
+def correlated_profile_config(profile: str | dict[str, Any] | None) -> dict[str, Any] | None:
+    if profile is None or profile == "" or profile == "none":
+        return None
+    if isinstance(profile, dict):
+        return copy.deepcopy(profile)
+    key = str(profile)
+    profiles = {
+        DEFAULT_CORRELATED_PROFILE["name"]: DEFAULT_CORRELATED_PROFILE,
+        "construct_bundle": DEFAULT_CORRELATED_PROFILE,
+        "anti_silencing_stress": DEFAULT_CORRELATED_PROFILE,
+    }
+    if key not in profiles:
+        raise ValueError(f"Unknown correlated profile: {profile}")
+    return copy.deepcopy(profiles[key])
+
+
+def _shock_severity(
+    rng: np.random.Generator,
+    probability: float,
+    sigma: float,
+) -> float:
+    if probability <= 0.0 or sigma <= 0.0:
+        return 0.0
+    if float(rng.random()) > float(probability):
+        return 0.0
+    return float(np.clip(abs(rng.normal(0.0, sigma)), 0.0, 3.0))
 
 
 def sample_candidate_parameters(
@@ -118,7 +164,7 @@ def jitter_promoters(
 ) -> dict[str, Any]:
     """Perturb promoter shape/leakage to test timing robustness."""
     perturbed = copy.deepcopy(params)
-    for key in ("pGhMat1", "pGhSCW_late"):
+    for key in active_promoter_keys(perturbed):
         promoter = perturbed["promoters"][key]
         promoter["hill_coefficient"] = max(
             1.0,
@@ -132,27 +178,8 @@ def jitter_promoters(
     return perturbed
 
 
-DEFAULT_FAILURE_RISKS = {
-    "copper_loading_fraction": 1.0,
-    "tyrosinase_activation_fraction": 1.0,
-    "quinone_stress_threshold": 0.08,
-    "ros_buffer_capacity": 1.0,
-    "silencing_probability": 0.0,
-    "event_expression_cv": 0.0,
-}
-
-
 def _failure_risk_block(params: dict[str, Any]) -> dict[str, float]:
-    cfg = dict(DEFAULT_FAILURE_RISKS)
-    cfg.update(params.get("failure_risks", {}))
-    return {
-        "copper_loading_fraction": _bounded(float(cfg["copper_loading_fraction"]), 0.0, 1.0),
-        "tyrosinase_activation_fraction": _bounded(float(cfg["tyrosinase_activation_fraction"]), 0.0, 1.0),
-        "quinone_stress_threshold": max(float(cfg["quinone_stress_threshold"]), 1e-6),
-        "ros_buffer_capacity": _bounded(float(cfg["ros_buffer_capacity"]), 0.0, 1.5),
-        "silencing_probability": _bounded(float(cfg["silencing_probability"]), 0.0, 0.80),
-        "event_expression_cv": _bounded(float(cfg["event_expression_cv"]), 0.0, 0.80),
-    }
+    return resolved_failure_risks(params)
 
 
 def jitter_failure_risks(
@@ -191,6 +218,167 @@ def jitter_failure_risks(
     )
     fr["quinone_stress_threshold"] = max(base["quinone_stress_threshold"], 1e-6)
     return perturbed
+
+
+def apply_correlated_failure_profile(
+    sampled: dict[str, float],
+    perturbed_params: dict[str, Any],
+    rng: np.random.Generator,
+    correlated_profile: str | dict[str, Any] | None,
+) -> tuple[dict[str, float], dict[str, Any], dict[str, float]]:
+    profile = correlated_profile_config(correlated_profile)
+    if not profile:
+        return sampled, perturbed_params, {}
+
+    out_sampled = dict(sampled)
+    out_params = copy.deepcopy(perturbed_params)
+    fr = out_params.setdefault("failure_risks", {})
+    comp = out_params.setdefault("melanin_pathway", {}).setdefault("compartmentalization", {})
+    prom_mel = out_params["promoters"]["pGhMat1"]
+    scw_promoters = [
+        out_params["promoters"][key]
+        for key in active_promoter_keys(out_params)
+        if key != "pGhMat1"
+    ]
+    meta = {"profile_name": str(profile["name"])}
+
+    shared_sev = _shock_severity(
+        rng,
+        float(profile.get("shared_expression_drop", {}).get("probability", 0.0)),
+        float(profile.get("shared_expression_drop", {}).get("sigma", 0.0)),
+    )
+    meta["shared_expression_drop"] = float(shared_sev)
+    if shared_sev > 0.0:
+        out_sampled["mat_strength"] = _bounded(
+            out_sampled["mat_strength"] * max(0.50, 1.0 - 0.12 * shared_sev),
+            0.4,
+            2.0,
+        )
+        out_sampled["scw_strength"] = _bounded(
+            out_sampled["scw_strength"] * max(0.48, 1.0 - 0.16 * shared_sev),
+            0.4,
+            2.0,
+        )
+        out_sampled["melanin_efficiency"] = _bounded(
+            out_sampled["melanin_efficiency"] * max(0.45, 1.0 - 0.14 * shared_sev),
+            0.4,
+            2.0,
+        )
+        out_sampled["late_retention_factor"] = _bounded(
+            out_sampled["late_retention_factor"] - 0.05 * shared_sev,
+            0.0,
+            0.9,
+        )
+        fr["copper_loading_fraction"] = _bounded(
+            float(fr.get("copper_loading_fraction", 1.0)) - 0.05 * shared_sev,
+            0.0,
+            1.0,
+        )
+        fr["tyrosinase_activation_fraction"] = _bounded(
+            float(fr.get("tyrosinase_activation_fraction", 1.0)) - 0.05 * shared_sev,
+            0.0,
+            1.0,
+        )
+        fr["silencing_probability"] = _bounded(
+            float(fr.get("silencing_probability", 0.0)) + 0.08 * shared_sev,
+            0.0,
+            0.80,
+        )
+        fr["event_expression_cv"] = _bounded(
+            float(fr.get("event_expression_cv", 0.0)) + 0.09 * shared_sev,
+            0.0,
+            0.80,
+        )
+        fr["ros_buffer_capacity"] = _bounded(
+            float(fr.get("ros_buffer_capacity", 1.0)) * max(0.75, 1.0 - 0.08 * shared_sev),
+            0.1,
+            1.5,
+        )
+        prom_mel["leakage_fraction"] = _bounded(
+            float(prom_mel["leakage_fraction"]) + 0.010 * shared_sev,
+            0.0,
+            0.25,
+        )
+        for promoter in scw_promoters:
+            promoter["leakage_fraction"] = _bounded(
+                float(promoter["leakage_fraction"]) + 0.012 * shared_sev,
+                0.0,
+                0.25,
+            )
+
+    timing_sev = _shock_severity(
+        rng,
+        float(profile.get("timing_overlap", {}).get("probability", 0.0)),
+        float(profile.get("timing_overlap", {}).get("sigma", 0.0)),
+    )
+    meta["timing_overlap"] = float(timing_sev)
+    if timing_sev > 0.0:
+        out_sampled["mat_activation_dpa"] = _bounded(
+            out_sampled["mat_activation_dpa"] - 0.70 * timing_sev,
+            28.0,
+            45.0,
+        )
+        out_sampled["scw_activation_dpa"] = _bounded(
+            out_sampled["scw_activation_dpa"] + 0.35 * timing_sev,
+            22.0,
+            40.0,
+        )
+        out_sampled["late_retention_factor"] = _bounded(
+            out_sampled["late_retention_factor"] - 0.04 * timing_sev,
+            0.0,
+            0.9,
+        )
+        prom_mel["hill_coefficient"] = max(
+            1.0,
+            float(prom_mel["hill_coefficient"]) * max(0.72, 1.0 - 0.10 * timing_sev),
+        )
+        prom_mel["leakage_fraction"] = _bounded(
+            float(prom_mel["leakage_fraction"]) + 0.018 * timing_sev,
+            0.0,
+            0.25,
+        )
+        for promoter in scw_promoters:
+            promoter["hill_coefficient"] = max(
+                1.0,
+                float(promoter["hill_coefficient"]) * max(0.80, 1.0 - 0.06 * timing_sev),
+            )
+
+    storage_sev = _shock_severity(
+        rng,
+        float(profile.get("storage_slip", {}).get("probability", 0.0)),
+        float(profile.get("storage_slip", {}).get("sigma", 0.0)),
+    )
+    meta["storage_slip"] = float(storage_sev)
+    if storage_sev > 0.0:
+        if bool(out_params.get("construct", {}).get("use_vacuolar_transit_peptides", False)):
+            comp["vacuolar_sequestration_fraction"] = _bounded(
+                float(comp.get("vacuolar_sequestration_fraction", 0.0)) - 0.15 * storage_sev,
+                0.0,
+                0.95,
+            )
+            comp["cytosolic_quinone_leak_fraction"] = _bounded(
+                float(comp.get("cytosolic_quinone_leak_fraction", 1.0)) + 0.12 * storage_sev,
+                0.05,
+                1.0,
+            )
+        fr["ros_buffer_capacity"] = _bounded(
+            float(fr.get("ros_buffer_capacity", 1.0)) * max(0.65, 1.0 - 0.10 * storage_sev),
+            0.1,
+            1.5,
+        )
+        out_sampled["melanin_efficiency"] = _bounded(
+            out_sampled["melanin_efficiency"] * max(0.60, 1.0 - 0.06 * storage_sev),
+            0.4,
+            2.0,
+        )
+        out_sampled["late_retention_factor"] = _bounded(
+            out_sampled["late_retention_factor"] - 0.03 * storage_sev,
+            0.0,
+            0.9,
+        )
+
+    meta["total_severity"] = float(shared_sev + timing_sev + storage_sev)
+    return out_sampled, out_params, meta
 
 
 def is_success(trial: dict[str, Any], thresholds: dict[str, float]) -> bool:
@@ -307,6 +495,7 @@ def run_robustness_analysis(
     seed: int = 42,
     thresholds: dict[str, float] | None = None,
     noise: dict[str, float] | None = None,
+    correlated_profile: str | dict[str, Any] | None = None,
     collect_trial_records: bool = False,
 ) -> list[dict[str, Any]]:
     thresholds = thresholds or DEFAULT_THRESHOLDS
@@ -322,6 +511,7 @@ def run_robustness_analysis(
             rng=rng,
             thresholds=thresholds,
             noise=noise,
+            correlated_profile=correlated_profile,
             candidate_rank=idx,
             collect_trial_records=collect_trial_records,
         )
@@ -368,6 +558,7 @@ def evaluate_candidate_trials(
     rng: np.random.Generator,
     thresholds: dict[str, float],
     noise: dict[str, float],
+    correlated_profile: str | dict[str, Any] | None,
     candidate_rank: int,
     collect_trial_records: bool = False,
 ) -> tuple[dict[str, float], list[dict[str, Any]]]:
@@ -379,6 +570,12 @@ def evaluate_candidate_trials(
         sampled = sample_candidate_parameters(candidate, rng, noise)
         perturbed_params = jitter_promoters(params, rng, noise)
         perturbed_params = jitter_failure_risks(perturbed_params, rng, noise)
+        sampled, perturbed_params, correlated_meta = apply_correlated_failure_profile(
+            sampled=sampled,
+            perturbed_params=perturbed_params,
+            rng=rng,
+            correlated_profile=correlated_profile,
+        )
         sampled_risk = _failure_risk_block(perturbed_params)
         trial = evaluate_candidate_proxy(
             params=perturbed_params,
@@ -394,6 +591,8 @@ def evaluate_candidate_trials(
 
         if collect_trial_records:
             success = is_success(trial, thresholds)
+            tyrp1_promoter = promoter_config_for_gene(perturbed_params, "TYRP1")
+            dct_promoter = promoter_config_for_gene(perturbed_params, "DCT")
             trial_records.append(
                 {
                     "candidate_input_rank": int(candidate_rank),
@@ -407,13 +606,36 @@ def evaluate_candidate_trials(
                     "sampled_late_retention_factor": float(sampled["late_retention_factor"]),
                     "sampled_hill_melA": float(perturbed_params["promoters"]["pGhMat1"]["hill_coefficient"]),
                     "sampled_hill_scw": float(perturbed_params["promoters"]["pGhSCW_late"]["hill_coefficient"]),
+                    "sampled_hill_tyrp1": float(tyrp1_promoter["hill_coefficient"]),
+                    "sampled_hill_dct": float(dct_promoter["hill_coefficient"]),
                     "sampled_leak_melA": float(perturbed_params["promoters"]["pGhMat1"]["leakage_fraction"]),
                     "sampled_leak_scw": float(perturbed_params["promoters"]["pGhSCW_late"]["leakage_fraction"]),
+                    "sampled_leak_tyrp1": float(tyrp1_promoter["leakage_fraction"]),
+                    "sampled_leak_dct": float(dct_promoter["leakage_fraction"]),
+                    "sampled_activation_tyrp1_dpa": float(tyrp1_promoter["activation_dpa"]),
+                    "sampled_activation_dct_dpa": float(dct_promoter["activation_dpa"]),
+                    "sampled_strength_tyrp1": float(tyrp1_promoter["strength_relative"]),
+                    "sampled_strength_dct": float(dct_promoter["strength_relative"]),
                     "sampled_copper_loading_fraction": float(sampled_risk["copper_loading_fraction"]),
                     "sampled_tyrosinase_activation_fraction": float(sampled_risk["tyrosinase_activation_fraction"]),
                     "sampled_ros_buffer_capacity": float(sampled_risk["ros_buffer_capacity"]),
                     "sampled_silencing_probability": float(sampled_risk["silencing_probability"]),
                     "sampled_event_expression_cv": float(sampled_risk["event_expression_cv"]),
+                    "sampled_vacuolar_sequestration_fraction": float(
+                        perturbed_params.get("melanin_pathway", {})
+                        .get("compartmentalization", {})
+                        .get("vacuolar_sequestration_fraction", 0.0)
+                    ),
+                    "sampled_cytosolic_quinone_leak_fraction": float(
+                        perturbed_params.get("melanin_pathway", {})
+                        .get("compartmentalization", {})
+                        .get("cytosolic_quinone_leak_fraction", 1.0)
+                    ),
+                    "correlated_profile_name": str(correlated_meta.get("profile_name", "")),
+                    "correlated_shared_expression_drop": float(correlated_meta.get("shared_expression_drop", 0.0)),
+                    "correlated_timing_overlap": float(correlated_meta.get("timing_overlap", 0.0)),
+                    "correlated_storage_slip": float(correlated_meta.get("storage_slip", 0.0)),
+                    "correlated_total_severity": float(correlated_meta.get("total_severity", 0.0)),
                     "color_L": float(trial["color_L"]),
                     "strength_g_tex": float(trial["strength_g_tex"]),
                     "yield_index": float(trial["yield_index"]),
