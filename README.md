@@ -115,4 +115,4 @@ LB ─── [pGhMat1 → melA] ─── [pGhSCW-late → TYRP1] ─── [pGh
 
 ## License
 
-Research use only. Patent pending on temporal decoupling strategy.
+Apache 2.0
